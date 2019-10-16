@@ -3,19 +3,17 @@ class User < ApplicationRecord
   attr_accessor :remember_token
   before_save { self.email = email.downcase }
 
-  validates :name,  presence: true, length: { maximum: 50 }
+  validates :name, presence: true, length: { maximum: 50 }
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 100 },
                     format: { with: VALID_EMAIL_REGEX },
-                    uniqueness: true    
-
-  validates :department, length: { in: 2..30 },
-                         allow_blank: true
-
+                    uniqueness: true
+  validates :department, length: { in: 2..50 }, allow_blank: true
+  validates :basic_time, presence: true
+  validates :work_time, presence: true
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 },
-                       allow_nil: true
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
@@ -39,6 +37,7 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 
+  # トークンがダイジェストと一致すればtrueを返します。
   def authenticated?(remember_token)
     # ダイジェストが存在しない場合はfalseを返して終了します。
     return false if remember_digest.nil?

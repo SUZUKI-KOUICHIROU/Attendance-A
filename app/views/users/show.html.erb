@@ -2,9 +2,9 @@
 <div>
   <table class="table table-bordered table-condensed user-table">
     <tr>
-      <td><div class="btn-users-show"><%= link_to "⇦ 前月へ", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
+      <td><div class="btn-users-show"><%= link_to " ◀️ ", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
 　　　  <%= l(@first_day, format: :middle) %> 時間管理表 
-　　　  <%= link_to "次月へ ⇨ ", user_path(date: @first_day.next_month), class: "btn btn-info" %></td>      
+　　　  <%= link_to " ▶️ ", user_path(date: @first_day.next_month), class: "btn btn-info" %></td>      
       <td>指定勤務時間 <%= format_basic_info(@user.work_time) %></td>
       <td colspan="3">基本時間 <%= format_basic_info(@user.basic_time) %></td>
       <td>初日:<%= l(@first_day, format: :short) %></td></td>
@@ -46,9 +46,13 @@
         <tr>
           <td><%= l(day.worked_on, format: :short) %></td>
           <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>
+            <% if btn_text = attendance_state(day) %>
+              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% end %>
+          </td>
+          <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
+          <td><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
           <td></td>
           <td></td>
           <td></td>

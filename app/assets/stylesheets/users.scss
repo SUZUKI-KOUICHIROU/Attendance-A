@@ -11,6 +11,13 @@
 
 /* ユーザー勤怠情報テーブル */
 
+#attendance-time {
+  td {
+    vertical-align: middle;
+    text-align: center;
+  }
+}
+
 #table-attendances {
   th {
     vertical-align: middle;
@@ -58,4 +65,3 @@
   margin: 15px 0;
   width: 30%;
 }
-

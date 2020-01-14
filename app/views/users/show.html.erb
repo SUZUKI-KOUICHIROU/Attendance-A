@@ -1,16 +1,16 @@
 <% provide(:title, @user.name) %>
 <div>
-  <table class="table table-bordered table-condensed user-table">
-    <tr>
-      <td>
-        <div class="btn-users-show"><%= link_to "⬅️", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
-　　　    <%= l(@first_day, format: :middle) %> 時間管理表 
-　　　    <%= link_to "➡️", user_path(date: @first_day.next_month), class: "btn btn-info" %>
-        </div>
-      </td>
-      <td>指定勤務時間 : <%= format_basic_info(@user.work_time) %></td>
-      <td colspan="3">基本時間 : <%= format_basic_info(@user.basic_time) %></td>
-      <td>初日 : <%= l(@first_day, format: :short) %></td></td>
+  <table class="table table-bordered table-condensed user-table" id="attendance-time">
+   <tr>
+     <td>
+       <div class="btn-users-show"><%= link_to "⬅️", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
+　　　   <%= l(@first_day, format: :middle) %> 時間管理表 
+　　　   <%= link_to "➡️", user_path(date: @first_day.next_month), class: "btn btn-info" %>
+       </div>
+     </td>
+         <td>指定勤務時間 : <%= format_basic_info(@user.work_time) %></td>
+         <td colspan="3">基本時間 : <%= format_basic_info(@user.basic_time) %></td>
+         <td>初日 : <%= l(@first_day, format: :short) %></td></td>
     </tr>
 
     <tr>
@@ -62,7 +62,7 @@
               %>
           <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
           <td><%= day.started_at.hour if day.started_at.present? %></td>
-          <td><%= day.started_at.min.floor_to(15) if day.started_at.present?  %></td>
+          <td><%= day.started_at.min.floor_to(15) if day.started_at.present? %></td>
           <td>
             <% if btn_text = attendance_state(day) %>
               <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>

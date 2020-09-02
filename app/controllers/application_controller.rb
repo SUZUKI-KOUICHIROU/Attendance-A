@@ -23,6 +23,13 @@ class ApplicationController < ActionController::Base
     redirect_to root_url unless current_user.admin?
   end
   
+  def not_admin_user
+    unless !current_user.admin
+    flash[:danger] = "管理者は勤怠画面を閲覧できません。"    
+    redirect_to root_url
+    end
+  end   
+  
     # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 
     @first_day = params[:date].nil? ? Date.current.beginning_of_month : params[:date].to_date

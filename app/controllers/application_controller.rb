@@ -8,6 +8,10 @@ class ApplicationController < ActionController::Base
     @user = User.find(params[:id])
   end
   
+  def set_base
+    @base = Base.find(params[:id])
+  end
+
   def logged_in_user
     unless logged_in?
     flash[:danger] = "ログインしてください。"

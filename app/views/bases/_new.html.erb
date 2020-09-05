@@ -1,0 +1,34 @@
+<% provide(:title, 'base--new') %>
+<% provide(:class_text, 'base--new') %>
+<% provide(:button_text, '拠点情報追加') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+<h1>拠点情報追加</h1>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <%= form_with(model: @base, local: true) do |f| %>
+      <%= render 'shared/error_messages', object: @base %>
+        <%= f.label :base_number, class: "label-#{yield(:class_text)}" %>
+        <%= f.text_field :base_number, class: "form-control" %>
+      
+        <%= f.label :base_name, class: "label-#{yield(:class_text)}" %>
+        <%= f.text_field :base_name, class: "form-control" %>
+    
+        <%= f.label :attendance_type, class: "label-#{yield(:class_text)}" %></br>
+        <%= f.select :attendance_type, 
+          {選択してください: "選択してください",
+          出勤: "出勤",
+          退勤: "退勤" } %>
+        <%= f.submit yield(:button_text), class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+ </div>
+</div>

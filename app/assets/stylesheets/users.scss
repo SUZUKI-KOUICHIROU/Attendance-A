@@ -13,20 +13,25 @@
 
 #attendance-time {
   td {
-    vertical-align: middle;
+    vertical-align: bottom;
     text-align: center;
   }
 }
 
 #table-attendances {
   th {
-    vertical-align: middle;
+    vertical-align: bottom;
     text-align: center;
   }
   td {
     vertical-align: middle;
     text-align: center;
   }
+}
+
+#btn-fix {
+  margin-top: 5px;
+  width: 182px; 
 }
 
 /* 入力フォーム */
@@ -58,21 +63,16 @@
 #btn-import {
   width: 273px;
   margin-top: 10px;
-  margin-bottom: 10px;
-  
 }
 
 #btn-edit {
   width: 100px;  
 }
 
-/* 基本情報編集モーダルウインドウ */
-
 .label-basic-info {
-  
+  margin-top: 10px;
 }
 
 .btn-basic-info {
-  margin: 15px 0;
-  width: 30%;
+  margin-top: 10px;
 }

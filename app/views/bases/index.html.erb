@@ -1,0 +1,33 @@
+<% provide(:title, 'base-index') %>
+
+<h1>拠点一覧</h1>
+<div class="col-md-10 col-md-offset-1">
+  <table class="table table-striped table-bordered table-condensed" id="base--index">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>拠点番号</th>
+        <th>拠点名</th>
+        <th>勤怠種類</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @bases.each do |base| %>           
+      <tr>
+        <%= form_with(model: base, url: basis_path(base), local: true, method: :patch) do |f| %>    
+          <th><%= link_to "編集", edit_basis_path(base), remote: true, class: "btn btn-primary" %></th>
+          <th><%= link_to "削除", base, method: :delete, data: { confirm: "削除してもよろしいですか？" }, class: "btn btn-primary" %></th>
+          <th><%= base.base_number %></th>
+          <th><%= base.base_name %></th>
+          <th><%= base.attendance_type %></th>
+        <% end %>    
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+    <%= link_to "拠点情報追加", new_basis_path, remote: true, class: "btn btn-primary" %>
+</div>
+
+<div id="new-base" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-base" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

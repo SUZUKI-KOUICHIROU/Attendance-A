@@ -28,29 +28,28 @@
   </table>
 </div>
 
+<% if current_user.superior? %>
+  <div>   
+    <font color="red">【所属長承認申請のお知らせ】</font>
+    <font class="box1" color="red"><%= link_to "件の通知があります", '#', remote: true, :style=>"color:red;" %></font>
+  </div>
+  <div>
+    <font color="red">【勤怠変更のお知らせ】</font>
+    <font class="box1" color="red"><%= link_to "件の通知があります", "#", remote:true, :style=>"color:red;" %></font>
+  </div>      
+  <div>  
+    <font color="red">【残業申請のお知らせ】</font>
+    <font class="box1" color="red"><%= link_to "件の通知があります", '#', remote: true, :style=>"color:red;" %></font>
+  </div>
+  <br>
+<% end %>
+
 <div class="btn-users-show"><%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), 
   class: "btn btn-primary" %>
   <%= link_to "CSV出力", '#', class: "btn btn-primary" %>
 <br>
   <%= link_to "勤怠修正ログ(承認済)", attendances_attendance_log_user_path, class: "btn btn-primary", id: "btn-fix" %>
 </div>
-
-<% if current_user.superior? %>
-  <div>   
-    <font color="red">【所属長承認申請のお知らせ】</font>
-    <font class="box1" color="red"><%= link_to "件の通知があります", '#', remote: true, :style=>"color:red;" %></font>
-  </div>
-  <br>
-  <div>
-    <font color="red">【勤怠変更のお知らせ】</font>
-    <font class="box1" color="red"><%= link_to "件の通知があります", "#", remote:true, :style=>"color:red;" %></font>
-  </div>      
-  <br>
-  <div>  
-    <font color="red">【残業申請のお知らせ】</font>
-    <font class="box1" color="red"><%= link_to "件の通知があります", '#', remote: true, :style=>"color:red;" %></font>
-  </div>
-<% end %>
 <br>
 <div>  
   <table class="table table-bordered table-condensed table-hover table-
@@ -136,10 +135,18 @@
        <td colspan="6"></td>
        <td></td>
        <td colspan="5"></td>
-   <td>
-       <p>所属長承認　未</p>
-       
-   </td>
+       <td>
+       <p class="application-title">所属長承認　未</p>
+            <% if current_user.employee_number == 2 %>
+              <%= select_tag 'name', options_for_select({上長B: 2},1), { include_blank: "上長選択", class: "btn btn-md btn-default btn-select" } %>
+            <% elsif current_user.employee_number == 3 %>
+              <%= select_tag 'name', options_for_select({上長A: 2},1), { include_blank: "上長選択", class: "btn btn-md btn-default btn-select" } %>
+            <% else %>
+              <%= select_tag 'name', options_for_select({上長A: 2, 上長B: 3},1), { include_blank: "上長選択", class: "btn btn-md btn-default btn-select" } %>
+            <% end %>
+          <br>
+            <%= submit_tag "申請", class: "btn btn-md btn-primary btn-application" %> 
+       </td>
       </tr>
     </tfoot>
   </table>

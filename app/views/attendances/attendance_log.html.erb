@@ -1,118 +1,41 @@
 <% provide(:title, 'attendance-log') %>
 
-<div class="container">
-<!--フラッシュメッセージの繰り返し処理-->
-  <h1>勤怠ログ</h1>
-<!--%= debug @attendances.first.inspect if @attendances.present? %>-->
-<!--%= debug params.inspect if params.present? %>-->
-<!--%= debug @one_month_logs.inspect if @one_month_logs.present? %>-->
-<!--%= debug logs_index_user_path.inspect if logs_index_user_path.present? %>-->
-<!--%= javascript_include_tag 'application' %>-->
+<h1>勤怠ログ</h1>
 
+<div class="col-md-10 col-md-offset-1">
+  <table class="table table-striped table-bordered table-condensed">
+      <%= link_to "リセット", '#', class: "btn btn-lg btn-default" %> 
+      <br>
+        <%= form_with(url: attendances_attendance_log_user_path, local: true) do |f| %>   
+          <%= f.date_select :arrival_date, {}, class: 'form-control', id: "date-select" %>
+      <br> 
+      <% end %>
 
-<form id="chenge-month" action="/users/2/logs/index?date=2020-09-01" accept-charset="UTF-8" data-remote="true" method="get"><input name="utf8" type="hidden" value="✓">
-
-  <a class="btn btn-default" href="/users/2/logs/index?date=2020-09-01">リセット</a>
-
-  <br>
-
-  <div id="wrapper">
-    <!--%= f.date_select '', {prompt: true, discard_day: true, use_month_numbers: true},-->
-    <!--{class: "form-control log-month", id: "log-month"}  %>-->
-    <select id="log-year" name="user[(1i)]" class="form-control log-year">
-<option value="">年</option>
-<option value="2015">2015</option>
-<option value="2016">2016</option>
-<option value="2017">2017</option>
-<option value="2018">2018</option>
-<option value="2019">2019</option>
-<option value="2020">2020</option>
-<option value="2021">2021</option>
-<option value="2022">2022</option>
-<option value="2023">2023</option>
-<option value="2024">2024</option>
-<option value="2025">2025</option>
-</select>
-<input type="hidden" id="user__2i" name="user[(2i)]" value="1">
-<input type="hidden" id="user__3i" name="user[(3i)]" value="1">
-
-    <input type="hidden" id="user__1i" name="user[(1i)]" value="1">
-<select id="log-month" name="user[(2i)]" class="form-control log-month">
-<option value="">月</option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-</select>
-<input type="hidden" id="user__3i" name="user[(3i)]" value="1">
-
-  </div>
-
-  <!--% link_to "月変更", logs_index_user_path(id: current_user.id,-->
-  <!--date: @first_day),method: :get, id: "chenge-month", class: "btn btn-default" %>-->
-
-<!--%= form_with(model: @user, url: logs_index_user_path(id: current_user.id, date: @first_day), method: :get, id: "chenge-month") do |f| %>-->
-  <!--%= f.date_select 'date-normal', '', {use_month_numbers: true} %>-->
-</form>  <div>
-    <table class="table table-bordered table-condensed table-hover" id="table-attendances">
-      <thead>
-        <tr>
-          <th>日付</th>
-          <th>変更前出社時間</th>
-          <th>変更前退社時間</th>
-          <th>変更後出社</th>
-          <th>変更後退社</th>
-          <th>指示者</th>
-          <th>承認日</th>
-        </tr>
-      </thead>
-      <tbody>
-            <tr>
-              <td>
-                <!--%= l(day.hiduke, format: :short) %>-->
-                2020-9-01
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                10：00
-              </td>
-              <td>
-                20：20
-              </td>
-              <td>
-                部門長 B
-              </td>
-              <td>
-                2020-9-05
-              </td>
-            </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!--<div class="center">-->
-  <!--  %= link_to "　　　キャンセル　　　", user_path(date: @first_day), class: "btn btn-default" %>-->
-  <!--  %= f.submit "　　　編集を保存する　　　", class: "btn btn-primary" %>-->
-  <!--</div>-->
-<!--% end %>-->
-      
-      <!--開発環境のみでのデバッグ情報表示-->
-      
-      
-    </div>
-  
-
-</body>
+    <thead> 
+      <tr>
+        <th>日付</th>
+        <th>変更前出社時間</th>
+        <th>変更前退社時間</th>
+        <th>変更後出社</th>
+        <th>変更後退社</th>
+        <th>指示者</th>
+        <th>承認日</th>
+      </tr>
+    </thead>
+    <tbody>
+    <!--% @bases.each do |base| %-->     
+      <tr>
+      <!--%= form_with(model: base, url: basis_path(base), local: true, method: :patch) do |f| %-->
+        <th>2020-09-03</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+       <!--% end %-->
+     <!--% end %-->
+    </tbody>
+  </table>
+</div>

@@ -39,10 +39,7 @@ class AttendancesController < ApplicationController
       if attendances_invalid?
         attendances_params.each do |id, item|
           attendance = Attendance.find(id)
-          if item[:change_superior_id].present?
-            attendance.update_attributes!(item)
-        　   attendance.update_attributes!(change_superior_name: User.find(item[:change_superior_id]).name)
-          end
+          attendance.update_attributes!(item)
         end
         flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
         redirect_to user_url(date: params[:date])
@@ -59,7 +56,7 @@ class AttendancesController < ApplicationController
   #勤怠変更申請ページ
   def edit_attendance_application
     @user = User.joins(:attendances).group("users.id").where.not(attendances: {changed_finished_at: nil})
-    @attendance_date = Attendance.where(attendance_date: current_user.id)
+    #@attendance_date = Attendance.where(attendance_date: current_user.id)
     @first_day = params[:date].nil? ? Date.current.beginning_of_month : params[:date].to_date
     @superiors = User && User.where(superior: true).where.not(id: current_user.id).map(&:name)
     @attendances = Attendance.where.not(attendances: {changed_finished_at: nil})

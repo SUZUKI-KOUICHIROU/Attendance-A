@@ -1,0 +1,30 @@
+<div>
+  <%= form_with(model: @attendance, url: attendances_update_one_month_approval_user_path(@attendance), method: :patch, local: true) do |f| %>
+
+    <% @user.each do |user| %>
+      <h1><%= "【#{user.name}からの1カ月分勤怠申請】" %></h1>
+        <table class="table table-bordered table-condensed table-hover table-striped" id="table-attendances">
+         <thead>
+            <tr>
+              <th>月</th>
+              <th>指示者確認㊞</th>
+              <th>変更</th>
+              <th>勤怠を確認する</th>
+              </tr>
+          </thead>
+            
+          <tbody>
+                <tr>    
+                  <td><%= l(@first_day, format: :short) %></td>
+                  <td><%= f.select :month_checker, @month_approval, { include_blank: "" }, class: "form-control" %></td>
+                  <td><%= f.check_box :approval_change %></td>
+                  <td><%= link_to "確認", user_path(@user), class: "btn btn-sm btn-primary" %></td>
+                </tr>
+          </tbody>
+        </table>
+          <div class="center">
+            <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+          </div>
+    <% end %>   
+  <% end %>
+</div>

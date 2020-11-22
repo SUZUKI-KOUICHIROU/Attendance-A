@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i(show edit update destroy edit_basic_info update_basic_info)
+  before_action :set_user, only: %i(show edit update destroy edit_basic_info update_basic_infos)
   before_action :logged_in_user, only: %i(index show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
   before_action :admin_user, only: %i(destroy edit_basic_info update_basic_info)
@@ -12,6 +12,10 @@ class UsersController < ApplicationController
 
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count  
+    @notice_sum1 = @attendances.where(month_check_superior: true).count
+    @superiors = User && User.where(superior: true).where.not(id: current_user.id)
+    @attendance = Attendance.find(params[:id])
+    @month_attendance = @attendance.month_checker  
   end
 
   def new
@@ -71,6 +75,6 @@ class UsersController < ApplicationController
     end
 
     def basic_info_params
-    params.require(:user).permit(:department, :basic_time, :work_time)
+      params.require(:user).permit(:department, :basic_time, :work_time)
     end
 end 

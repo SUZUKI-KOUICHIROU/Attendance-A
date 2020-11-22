@@ -49,10 +49,6 @@
                     <%= attendance.collection_select :change_confirmation_approver_id, @superiors, :id, :name,
                                                      {include_blank: true, selected: nil}, class: "form-control" %>
                   <% end %>
-                  <%= attendance.hidden_field :change_confirmation_status, value: "申請中" %>
-                  <%= attendance.hidden_field :change_approval, value: 2 %>
-                  <%= attendance.hidden_field :change_check, value: "0" %>
-                  <%= attendance.hidden_field :calendar_day, value: day.worked_on.to_date %>
               </td>  
             </tr>
           <% end %>

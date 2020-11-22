@@ -55,7 +55,7 @@
          <td><%= day.started_at&.floor_to(15.minutes)&.strftime("%-M") %></td>
          <td><%= day.finished_at&.strftime("%-H") %></td> 
          <td><%= day.finished_at&.floor_to(15.minutes)&.strftime("%-M")%></td> 
-         <td><%= day.changed_started_at.strftime("%-H") %></td>
+         <td><%= day.changed_started_at&.strftime("%-H") %></td>
          <td><%= day.changed_started_at&.floor_to(15.minutes)&.strftime("%-M") %></td> 
          <td><%= day.changed_finished_at&.strftime("%-H") %></td> 
          <td><%= day.changed_finished_at&.floor_to(15.minutes)&.strftime("%-M") %></td> 

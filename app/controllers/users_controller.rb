@@ -14,8 +14,6 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count  
     @notice_sum1 = @attendances.where(month_check_superior: true).count
     @superiors = User && User.where(superior: true).where.not(id: current_user.id)
-    @attendance = Attendance.find(params[:id])
-    @month_attendance = @attendance.month_checker  
   end
 
   def new

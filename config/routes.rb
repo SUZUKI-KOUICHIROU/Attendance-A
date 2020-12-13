@@ -19,12 +19,13 @@ Rails.application.routes.draw do
       get 'attendances/edit_attendance_application'
       patch 'attendances/update_attendance_application'
       get 'attendances/attendance_log'
-      post 'attendances/request_one_month_approval'
-      get 'attendances/edit_one_month_approval'
-      patch 'attendances/update_one_month_approval'
+      post 'approvals/create'
+      get 'approvals/edit_month_approval'
+      patch 'approvals/update_month_approval'
     end
   resources :attendances, only: :update
+  resources :approvals
   end
   resources :bases do
-  end 
+  end
 end

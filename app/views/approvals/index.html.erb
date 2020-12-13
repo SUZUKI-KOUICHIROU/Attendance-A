@@ -1,8 +1,18 @@
 <div>
-  <%= form_with(model: @attendance, url: attendances_update_one_month_approval_user_path(@attendance), method: :patch, local: true) do |f| %>
 
-    <% @user.each do |user| %>
-      <h1><%= "【#{user.name}からの1カ月分勤怠申請】" %></h1>
+  <%= form_with(model: @user, url: approvals_update_month_approval_user_path(@user, @approvals), method: :patch, local: true) do |f| %>
+    <% @users.each do |user| %>
+    <% if @user.employee_number == 2 %>  
+      <% if user.approvals.count > 0 && user.id != 2 %> 
+          <h1><%= user.name %>からの1ヶ月勤怠変更申請</h1>
+      【user_id】<%= user.id %>
+      【approval_id】<%= @approval_user.id %>
+      【superior_id】<%= @approval_user.superior_id %>
+      
+      <% end %>
+    <% end %>
+    
+    
         <table class="table table-bordered table-condensed table-hover table-striped" id="table-attendances">
          <thead>
             <tr>
@@ -12,19 +22,18 @@
               <th>勤怠を確認する</th>
               </tr>
           </thead>
-            
           <tbody>
                 <tr>    
-                  <td><%= l(@first_day, format: :short) %></td>
+                  <td><%= %></td> 
                   <td><%= f.select :month_checker, @month_approval, { include_blank: "" }, class: "form-control" %></td>
-                  <td><%= f.check_box :approval_change %></td>
+                  <td><%= f.check_box :status_change %></td>
                   <td><%= link_to "確認", user_path(@user), class: "btn btn-sm btn-primary" %></td>
                 </tr>
           </tbody>
         </table>
+      <% end %>
           <div class="center">
             <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
           </div>
-    <% end %>   
-  <% end %>
+  <% end %>  
 </div>

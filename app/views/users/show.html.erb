@@ -28,10 +28,11 @@
   </table>
 </div>
 
+
 <% if current_user.superior? %>
   <div>   
       <font color="red">【所属長承認申請のお知らせ】</font>
-      <font class="box1" color="red"><%= link_to "件の通知があります", user_approvals_path(current_user), :style=>"color:red;" %></font>
+      <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_month_approval_user_path, :style=>"color:red;" %></font>
   </div>
   <div>
       <font color="red">【勤怠変更のお知らせ】</font>
@@ -138,12 +139,13 @@
        <td>
           
            所属長承認 :
-       
-       <%= form_with(model: @approval, url: user_approvals_path(current_user), method: :post, local: true) do |f| %>
-         <%= f.collection_select :superior_id, @superiors, :id, :name, { include_blank: "なし" }, class: "form-control" %>
-         <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
-       <% end %>
-
+         <% if current_user == @user %> 
+           <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+             <%= f.select :month_check_superior, ["上長A", "上長B"], { include_blank: "", selected: 1 },
+                                           { class: "form-control", required: true } %>
+           <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
+           <% end %>
+         <% end %>
        </td>
       </tr>
     </tfoot>

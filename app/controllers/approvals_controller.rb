@@ -1,15 +1,14 @@
 class ApprovalsController < ApplicationController
-  protect_from_forgery  
+  #protect_from_forgery  
   
   before_action :set_user, only: %i(edit_month_approval update_month_approval)
   
 
   
+       
   def create
     @user = User.find(params[:user_id])
     @approval = @user.approvals.create(approvals_params)
-    #@superior_user = User.where(superior: true)
-    
       if @approval.save
         flash[:success] = "申請しました。"
         redirect_to @user  
@@ -22,23 +21,17 @@ class ApprovalsController < ApplicationController
   #1ヵ月承認ページ
   def index
     @user = User.find(params[:user_id])
-    @users = User.where(params[:user_id])
-    #@approvals = User.joins(:approvals).group("users.id").where.not(approvals: {superior_id: nil})
-    @approval_user = Approval.find(params[:user_id])
-    #@approvals = Approval.where(params[:superior_id].present?, id: params[:superior_id])
-    #@approvals = User.joins(:approval).where(superior_id: 2) 
-    #@approvals = Approval.where(params[:superior_id])
-    @approvals = Approval.where(month_checker:1, superior_id: 3).map{ |a| [a.id, a.attributes.delete("id")] }
-    @first_day = params[:date].nil? ?
-    Date.current.beginning_of_month : params[:date].to_date
-    @last_day = @first_day.end_of_month
-    one_month = [*@first_day..@last_day]
+    #@users = User.joins(:approvals).group("users.id").where.not(approvals: {superior_id: nil}).where.not(id: current_user.id)
+    @usersa = User.joins(:approvals).group("users.id").where(approvals: {superior_id: 2}).where.not(id: current_user.id)
+    #@usersb = User.joins(:approvals).group("users.id").where(approvals: {superior_id: 3}).where.not(id: current_user.id)
+    @approvala = Approval.where(superior_id: 2).pluck(:superior_id)
+    @approvalb = Approval.where(superior_id: 3).pluck(:superior_id)
+    @approvals = Approval.where(params[:user_id])
     @month_approval =  ["申請なし", "申請中", "承認", "否認"]
-    
+    @first_day = params[:date].nil? ? Date.current.beginning_of_month : params[:date].to_date
   end
 
   #1ヵ月承認
-
   def update_month_approval
     @user = User.find(params[:user_id])
     @approval_month = Attendance.find(params[:id])
@@ -55,7 +48,7 @@ class ApprovalsController < ApplicationController
 
     private
       def approvals_params
-        params.permit(:superior_id)
+        params.permit(:superior_id, :approval_month)
       end
 
       def superior_approval_params

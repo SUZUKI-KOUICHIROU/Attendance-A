@@ -3,7 +3,7 @@
 
 <div> 
   
-<%= form_wth model: @user, url:attendances_update_attendance_application_user_path, local: true, method: :patch do |f| %>
+<%= form_with(model: @user, url: attendances_update_attendance_application_user_path, local: true, method: :patch) do |f| %>
   <% @user.each do |user| %>  
     <h1><%="【#{user.name}からの勤怠変更申請】" %></h1>
      <table class="table table-bordered table-condensed table-hover table-striped" id="table-attendances">

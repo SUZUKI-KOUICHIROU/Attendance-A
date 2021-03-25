@@ -10,18 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201207222701) do
-
-  create_table "approvals", force: :cascade do |t|
-    t.integer "superior_id"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "month_checker"
-    t.string "status_change"
-    t.string "superior_status"
-    t.index ["user_id"], name: "index_approvals_on_user_id"
-  end
+ActiveRecord::Schema.define(version: 20210325040131) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
@@ -35,7 +24,9 @@ ActiveRecord::Schema.define(version: 20201207222701) do
     t.datetime "changed_started_at"
     t.datetime "changed_finished_at"
     t.string "month_check_superior"
-    t.integer "approval_status"
+    t.string "month_status"
+    t.date "apply_month"
+    t.string "status_change"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -55,14 +46,14 @@ ActiveRecord::Schema.define(version: 20201207222701) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "basic_time", default: "2020-12-10 23:00:00"
-    t.datetime "work_time", default: "2020-12-10 22:30:00"
+    t.datetime "basic_time", default: "2021-01-05 23:00:00"
+    t.datetime "work_time", default: "2021-01-05 22:30:00"
     t.boolean "superior", default: false
     t.string "belong"
     t.integer "employee_number"
     t.integer "card_id"
-    t.datetime "designated_starttime", default: "2020-12-11 00:00:00"
-    t.datetime "designated_endtime", default: "2020-12-11 09:00:00"
+    t.datetime "designated_starttime", default: "2021-01-06 00:00:00"
+    t.datetime "designated_endtime", default: "2021-01-06 09:00:00"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

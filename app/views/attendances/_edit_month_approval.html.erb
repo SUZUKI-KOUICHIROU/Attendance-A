@@ -1,10 +1,15 @@
-<div>
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
 
-  <%= form_with(model: @user, url: attendances_update_month_approval_user_path, method: :patch, local: true) do |f| %>
+  <%= form_with(model: @user, url: attendances_update_month_approval_user_path(date: @first_day), method: :patch, local: true) do |f| %>
 
     <% @attendances.each do |user_id, attendances| %>
       <% user = User.find(user_id) %> 
-      <h1><%= user.name %>からの1ヶ月勤怠変更申請</h1>
+      <h1>【<%= user.name %>からの1ヶ月勤怠変更申請】</h1>
       
       <table class="table table-bordered table-condensed table-hover table-striped" id="table-attendances">
         <thead>
@@ -20,7 +25,8 @@
            <tbody>
              <tr>
                <td><%= "#{day.apply_month.mon}月" %></td> 
-               <td><%= approval.select :month_status, ["申請中", "承認", "否認", "なし"], { include_blank: false, selected: 1 }, class: "form-control" %></td>
+               <td><%= approval.select :month_status, ["申請中", "承認", "否認", "なし"], 
+                                                      { include_blank: false, selected: 1 }, class: "form-control" %></td>
                <td><%= approval.check_box :status_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>

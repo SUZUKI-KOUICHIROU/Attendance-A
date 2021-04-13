@@ -3,10 +3,16 @@
   <table class="table table-bordered table-condensed user-table" id="attendance-time">
    <tr>
      <td>
+     <% unless current_user?(@user) %>
+       <div>
+　　　   <%= l(@first_day, format: :middle) %> 時間管理表 
+       </div>
+     <% else %>
        <div class="btn-users-show"><%= link_to "⬅️", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
 　　　   <%= l(@first_day, format: :middle) %> 時間管理表 
 　　　   <%= link_to "➡️", user_path(date: @first_day.next_month), class: "btn btn-info" %>
        </div>
+     <% end %> 
      </td>
          <td>
              指定勤務開始時間 : <%= format_basic_info(@user.designated_starttime) %>
@@ -28,32 +34,50 @@
   </table>
 </div>
 
+  <% if @user.id == 2 && current_user?(@user) %>
+    <div>   
+      <% if @approval_sum1 == 0 %>
+        <font>【所属長承認申請のお知らせ】</font>
+      <% else %>
+        <font color="red">【所属長承認申請のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum1}件の通知があります", attendances_edit_month_approval_user_path, remote: true, :style=>"color:red;" %></font>
+      <% end %>
+    </div>
+  <% end %>
 
-<% if current_user.superior? %>
-  <div>   
-      <font color="red">【所属長承認申請のお知らせ】</font>
-      <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_month_approval_user_path, :style=>"color:red;" %></font>
-  </div>
+  <% if @user.id == 3 && current_user?(@user) %>
+    <div>   
+      <% if @approval_sum2 == 0 %>
+        <font>【所属長承認申請のお知らせ】</font>  
+      <% else %>
+        <font color="red">【所属長承認申請のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum2}件の通知があります", attendances_edit_month_approval_user_path, remote: true, :style=>"color:red;" %></font>
+      <% end %>
+    </div>
+  <% end %>
+
   <div>
       <font color="red">【勤怠変更のお知らせ】</font>
       <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_attendance_application_user_path, :style=>"color:red;" %></font>
   </div>      
   <div>  
     <font color="red">【残業申請のお知らせ】</font>
-    <font class="box1" color="red"><%= link_to "件の通知があります", '#', remote: true, :style=>"color:red;" %></font>
+    <font class="box1" color="red"><%= link_to "件の通知があります", '#', :style=>"color:red;" %></font>
   </div>
   <br>
+
+<% if current_user?(@user) %>
+  <div class="btn-users-show"><%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), 
+    class: "btn btn-primary" %>
+    <%= link_to "CSV出力", '#', class: "btn btn-primary" %>
+  <br>
+    <%= link_to "勤怠修正ログ(承認済)", attendances_attendance_log_user_path, class: "btn btn-primary", id: "btn-fix" %>
+  </div>
+  <br>
+  <div>  
 <% end %>
 
-<div class="btn-users-show"><%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), 
-  class: "btn btn-primary" %>
-  <%= link_to "CSV出力", '#', class: "btn btn-primary" %>
-<br>
-  <%= link_to "勤怠修正ログ(承認済)", attendances_attendance_log_user_path, class: "btn btn-primary", id: "btn-fix" %>
-</div>
-<br>
-<div>  
-  <table class="table table-bordered table-condensed table-hover table-
+<table class="table table-bordered table-condensed table-hover table-
   striped" id="table-attendances">
 
   <thead>
@@ -90,9 +114,10 @@
     <% @attendances.each do |day| %>
     <tr>
       <td>
-        <%= link_to "残業申請", '#', remote: true, class: "btn btn-primary" %>
+        <% if current_user?(@user) %> 
+          <%= link_to "残業申請", attendances_edit_overwork_request_user_path(@user, date: day.worked_on), class: "btn btn-primary" %>
+        <% end %>
       </td>
-  
       <td><%= l(day.worked_on, format: :short) %></td>
               <% 
                 css_class = 
@@ -107,8 +132,10 @@
       <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
       <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
       <td>
-          <% if btn_text = attendance_state(day) %>
-            <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+          <% if current_user?(@user) %> 
+            <% if btn_text = attendance_state(day) %>
+              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% end %>
           <% end %>
       </td>
       <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
@@ -121,11 +148,11 @@
           <% end %>
       </td>
       <td><%= day.note %></td>
-      <td></td> 
-      <td></td> 
+      <td><%= day.plans_endtime.strftime('%H') if day.plans_endtime.present? %></td> 
+      <td><%= day.plans_endtime.strftime('%M') if day.plans_endtime.present? %></td> 
       <td></td>
-      <td></td>
-      <td></td>
+      <td><%= day.business_contents if day.business_contents.present? %></td>
+      <td><%= day.superior_confirmation if day.superior_confirmation? %></td>
      </tr>
    </tbody>
      <% end %>
@@ -137,13 +164,20 @@
        <td></td>
        <td colspan="5"></td>
        <td>
-          
-           所属長承認 :
+       
+         <% if @approval.month_status == "承認" || @approval.month_status == "否認" %>
+           所属長承認：<%= "#{@approval.month_check_superior}から#{@approval.month_status}済" %>
+         <% elsif @approval.month_status == "申請中" %>
+           所属長承認：<%= "#{@approval.month_check_superior}へ#{@approval.month_status}" %>  
+         <% else %>
+           所属長承認：未  
+         <% end %>
+       
          <% if current_user == @user %> 
            <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
              <%= f.select :month_check_superior, ["上長A", "上長B"], { include_blank: "", selected: 1 },
-                                           { class: "form-control", required: true } %>
-           <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
+                                                 { class: "form-control", required: true } %>
+             <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
            <% end %>
          <% end %>
        </td>
@@ -151,3 +185,5 @@
     </tfoot>
   </table>
 </div>
+
+<div id="edit-month-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

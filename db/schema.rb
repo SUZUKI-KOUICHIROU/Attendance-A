@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210325040131) do
+ActiveRecord::Schema.define(version: 20210412071011) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
@@ -20,13 +20,16 @@ ActiveRecord::Schema.define(version: 20210325040131) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "tomorrow"
     t.datetime "changed_started_at"
     t.datetime "changed_finished_at"
     t.string "month_check_superior"
     t.string "month_status"
     t.date "apply_month"
-    t.string "status_change"
+    t.boolean "status_change", default: false, null: false
+    t.datetime "plans_endtime"
+    t.string "business_contents"
+    t.boolean "next_day", default: false, null: false
+    t.string "superior_confirmation"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -46,14 +49,14 @@ ActiveRecord::Schema.define(version: 20210325040131) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "basic_time", default: "2021-01-05 23:00:00"
-    t.datetime "work_time", default: "2021-01-05 22:30:00"
+    t.datetime "basic_time", default: "2021-04-02 23:00:00"
+    t.datetime "work_time", default: "2021-04-02 22:30:00"
     t.boolean "superior", default: false
     t.string "belong"
     t.integer "employee_number"
     t.integer "card_id"
-    t.datetime "designated_starttime", default: "2021-01-06 00:00:00"
-    t.datetime "designated_endtime", default: "2021-01-06 09:00:00"
+    t.datetime "designated_starttime", default: "2021-04-03 00:00:00"
+    t.datetime "designated_endtime", default: "2021-04-03 09:00:00"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

@@ -5,6 +5,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
+  before_action :superior_choice, only: %i(edit_overwork_request)
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -77,12 +78,11 @@ class AttendancesController < ApplicationController
         flash[:danger] = "変更する場合はチェックを入れてください。"
       end      
     end
-    redirect_to @user
+    redirect_to user_url(date: params[:date])
   end
 
   #残業申請ページ
   def edit_overwork_request
-    #@attendances = Attendance.find(params[:id])
     @attendances = @user.attendances.where(worked_on: params[:date])
   end 
  
@@ -95,8 +95,8 @@ class AttendancesController < ApplicationController
       else
         flash[:danger] = "残業申請に失敗しました。"  
       end 
-      redirect_to user_url(date: params[:date])  
     end 
+    redirect_to user_url
   end
 
   #勤怠変更申請ページ
@@ -139,7 +139,7 @@ class AttendancesController < ApplicationController
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
-      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
     end
     
     #1ヶ月申請

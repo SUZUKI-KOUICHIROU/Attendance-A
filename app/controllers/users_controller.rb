@@ -5,14 +5,14 @@ class UsersController < ApplicationController
   before_action :admin_user, only: %i(destroy edit_basic_info update_basic_info)
   before_action :not_admin_user, only: %i(show)
   before_action :set_one_month, only: %i(show)
-   
+  before_action :superior_choice, only: %i(show)
+  
   def index
     @users = User.paginate(page: params[:page]).search(params[:search])
   end
 
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count  
-    #@superiors = User && User.where(superior: true).where.not(id: current_user.id)
     @approval = @user.attendances.find_by(worked_on: @first_day)
     @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
     @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count

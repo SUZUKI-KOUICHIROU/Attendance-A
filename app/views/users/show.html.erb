@@ -58,7 +58,7 @@
 
   <div>
       <font color="red">【勤怠変更のお知らせ】</font>
-      <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_attendance_application_user_path, :style=>"color:red;" %></font>
+      <font class="box1" color="red"><%= link_to "件の通知があります", '#', :style=>"color:red;" %></font>
   </div>      
   <div>  
     <font color="red">【残業申請のお知らせ】</font>
@@ -150,9 +150,13 @@
       <td><%= day.note %></td>
       <td><%= day.plans_endtime.strftime('%H') if day.plans_endtime.present? %></td> 
       <td><%= day.plans_endtime.strftime('%M') if day.plans_endtime.present? %></td> 
-      <td></td>
+      <td>
+          <% if day.plans_endtime.present? %>
+            <%= overwork_times(format_basic_info(day.plans_endtime), format_basic_info(@user.designated_endtime), day.next_day) %>
+          <% end %>
+      </td>
       <td><%= day.business_contents if day.business_contents.present? %></td>
-      <td><%= day.superior_confirmation if day.superior_confirmation? %></td>
+      <td></td>
      </tr>
    </tbody>
      <% end %>
@@ -175,7 +179,7 @@
        
          <% if current_user == @user %> 
            <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
-             <%= f.select :month_check_superior, ["上長A", "上長B"], { include_blank: "", selected: 1 },
+             <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "", selected: 1 },
                                                  { class: "form-control", required: true } %>
              <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
            <% end %>

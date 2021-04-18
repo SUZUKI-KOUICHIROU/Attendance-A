@@ -11,6 +11,14 @@ module AttendancesHelper
   def working_times(start, finish)
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
+    
+  def overwork_times(plans_endtime, designated_endtime, next_day)
+    unless next_day == true
+      format("%.2f", (plans_endtime.to_f - designated_endtime.to_f)) 
+    else
+      format("%.2f", (plans_endtime.to_f - designated_endtime.to_f) + 24) 
+    end
+  end 
 
   def attendances_invalid?
     attendances = true

@@ -25,15 +25,15 @@
       						'text-primary'
       					when '日'
       						'text-danger'
-      					end %>
-            
+      					end %> 
+
               <tr>
                 <td><%= l(day.worked_on, format: :short) %></td>
                 <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %>
                 <td><%= attendance.time_select :plans_endtime, class: "form-control" %></td>
                 <td><%= attendance.check_box :next_day, {}, "true", "false" %></td>
                 <td><%= attendance.text_field :business_contents, class: 'form-control' %></td>
-                <td><%= attendance.select :superior_confirmation, ["上長A", "上長B"], { include_blank: "選択してください", selected: 1 },
+                <td><%= attendance.select :superior_confirmation, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
                                                                   { class: "form-control", required: true } %></td>
               </tr>
                   <% end %>

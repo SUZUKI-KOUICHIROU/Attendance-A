@@ -20,6 +20,14 @@ module AttendancesHelper
     end
   end 
 
+  def worktime_tomorrow(changed_started_at, changed_finished_at, tomorrow)
+    unless tomorrow == true
+      format("%.2f", (changed_finished_at.to_f - changed_started_at.to_f)) 
+    else
+      format("%.2f", (changed_finished_at.to_f - changed_started_at.to_f) + 24) 
+    end
+  end
+
   def attendances_invalid?
     attendances = true
     attendances_params.each do |id, item|

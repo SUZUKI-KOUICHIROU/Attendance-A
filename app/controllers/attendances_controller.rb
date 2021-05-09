@@ -6,7 +6,7 @@ class AttendancesController < ApplicationController
                                     edit_overwork_approval update_overwork_approval) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
-  before_action :superior_choice, only: %i(edit_overwork_request)
+  before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -49,6 +49,16 @@ class AttendancesController < ApplicationController
   rescue ActiveRecord::RecordInvalid
       flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
       redirect_to attendances_edit_one_month_user_url(date: params[:date])
+  end
+
+  #勤怠変更申請ページ
+  def edit_worktime_approval
+    @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name}).where.not(attendances: {changed_finished_at: nil})
+    @work_time = Attendance.where(worktime_check_superior: @user.name).where.not(changed_finished_at: nil).order(:worked_on)
+  end
+  
+  #勤怠変更承認
+  def update_worktime_approval
   end
 
   #1ヶ月申請

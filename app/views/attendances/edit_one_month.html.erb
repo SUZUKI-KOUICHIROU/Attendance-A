@@ -34,21 +34,16 @@
               <td><%= attendance.time_field :started_at, class: "form-control" %></td>
               <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
             <% end %>
-              <td><!--%= attendance.check_box :tomorrow %--></td>
+              <td><%= attendance.check_box :tomorrow, {}, "true", "false" %></td>
               <td>
-                  <% if day.started_at.present? && day.finished_at.present? %>
-                    <%= working_times(day.started_at, day.finished_at) %>
+                  <% if day.changed_started_at.present? && day.changed_finished_at.present? %>
+                    <%= worktime_tomorrow(format_basic_info(day.changed_finished_at), format_basic_info(day.changed_started_at), day.tomorrow) %>
                   <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
-                  <!--% if Date.current < day.worked_on && day.finished_at.blank? %-->
-                    <!--%= attendance.collection_select :change_confirmation_approver_id, @superiors, :id, :name,
-                                                     {include_blank: true, selected: nil}, disabled: true, class: "form-control" %-->
-                  <!--% else %-->
-                    <!--%= attendance.collection_select :change_confirmation_approver_id, @superiors, :id, :name,
-                                                     {include_blank: true, selected: nil}, class: "form-control" %-->
-                  <!--% end %-->
+                  <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
+                                                                                           { class: "form-control", required: true } %>
               </td>  
             </tr>
           <% end %>

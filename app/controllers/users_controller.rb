@@ -16,6 +16,8 @@ class UsersController < ApplicationController
     @approval = @user.attendances.find_by(worked_on: @first_day)
     @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
     @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count
+    @approval_sum5 = Attendance.where(superior_confirmation: "上長A").count
+    @approval_sum6 = Attendance.where(superior_confirmation: "上長B").count
   end
 
   def new

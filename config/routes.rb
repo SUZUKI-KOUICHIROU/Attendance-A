@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       patch 'update_basic_info'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
+      get 'attendances/edit_worktime_approval'
+      patch 'attendances/update_worktime_approval'
       get 'working_employee'
       get 'attendances/attendance_log'
       patch 'attendances/update_month_apply'
@@ -22,6 +24,8 @@ Rails.application.routes.draw do
       patch 'attendances/update_month_approval'
       get 'attendances/edit_overwork_request'
       patch 'attendances/update_overwork_request'
+      get 'attendances/edit_overwork_approval'
+      patch 'attendances/update_overwork_approval'
     end
   resources :attendances, only: :update
   end

@@ -1,0 +1,76 @@
+<%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
+　　
+  <% @worktime_user.each do |user| %>
+  
+      <h1>【<%= user.name %>からの勤怠変更申請】</h1>
+    
+  <table class="table table-bordered table-condensed table-hover table-striped" id="table-worktime-approval">
+    <thead>
+      <tr>
+        <th rowspan="3">日付</th>
+        <th rowspan="3">曜日</th>
+        <th colspan="4">変更前</th>
+        <th colspan="4">変更後</th>
+        <th rowspan="3">備考</th>
+　　　　<th rowspan="3">指示者確認㊞</th>
+　　　　<th rowspan="3">変更</th>
+　　　　<th rowspan="3">勤怠を確認する</th>
+      </tr>
+      <tr>
+        <th colspan="2">出社</th>
+        <th colspan="2">退社</th>
+        <th colspan="2">出社</th>
+        <th colspan="2">退社</th>
+      </tr>
+      <tr>
+        <th>時</th>
+        <th>分</th>
+        <th>時</th>
+        <th>分</th>
+        <th>時</th>
+        <th>分</th>
+        <th>時</th>
+        <th>分</th>
+      </tr>
+    </thead>
+       
+       <% @work_time.each do |day| %>     
+         <%= f.fields_for "attendances[]", day do |overtime| %>  
+           <% if day.user_id == user.id %>  
+             
+             <% css_class = case $days_of_the_week[day.worked_on.wday]
+      					when '土'
+      						'text-primary'
+      					when '日'
+      						'text-danger'
+      					end %>   
+           
+           <tbody> 
+             <tr>
+               <td><%= l(day.worked_on, format: :short) %></td> 
+               <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
+               <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
+               <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
+               <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
+               <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
+               <td><%= day.changed_started_at.strftime("%H") if day.changed_started_at.present? %></td>
+               <td><%= day.changed_started_at.strftime("%M") if day.changed_started_at.present? %></td>
+               <td><%= day.changed_finished_at.strftime("%H") if day.changed_finished_at.present? %></td>
+               <td><%= day.changed_finished_at.strftime("%M") if day.changed_finished_at.present? %></td>
+               <td><%= day.note %></td>
+               <td><%= overtime.select :worktime_status, ["申請中", "承認", "否認", "なし"], 
+                                                         { include_blank: false, selected: 1 }, class: "form-control" %></td>
+               <td><%= overtime.check_box :overtime_change, {}, "true", "false" %></td>
+               <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
+             </tr>
+           </tbody>
+         <% end %>
+       <% end %> 
+      <% end %>
+      </table>
+   <% end %>   
+      <div class="center">
+        <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+      </div>
+  <% end %>  
+</div>

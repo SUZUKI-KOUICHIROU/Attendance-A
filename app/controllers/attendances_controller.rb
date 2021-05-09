@@ -2,7 +2,8 @@ class AttendancesController < ApplicationController
 
   include AttendancesHelper
   
-  before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request) 
+  before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
+                                    edit_overwork_approval update_overwork_approval) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request)
@@ -99,6 +100,16 @@ class AttendancesController < ApplicationController
     redirect_to user_url
   end
 
+  #残業申請承認ページ
+  def edit_overwork_approval
+    @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name}).where.not(attendances: {plans_endtime: nil})
+    @overwork = Attendance.where(superior_confirmation: @user.name).where.not(plans_endtime: nil).order(:worked_on)
+  end
+  
+  #残業申請承認
+  def update_overwork_approval
+  end
+
   #勤怠変更申請ページ
   def edit_attendance_application
     @user = User.joins(:attendances).group("users.id").where.not(attendances: {changed_finished_at: nil})
@@ -155,6 +166,11 @@ class AttendancesController < ApplicationController
     #残業申請
     def overwork_request_params
       params.require(:user).permit(attendances: [:plans_endtime, :next_day, :business_contents, :superior_confirmation])[:attendances]
+    end
+    
+    #残業申請承認
+    def overwork_approval_params
+      params.require(:user).permit(attendances: [:overwork_status, :overwork_change])[:attendances]
     end
     
     # 勤怠変更申請承認

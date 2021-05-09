@@ -60,10 +60,28 @@
       <font color="red">【勤怠変更のお知らせ】</font>
       <font class="box1" color="red"><%= link_to "件の通知があります", '#', :style=>"color:red;" %></font>
   </div>      
-  <div>  
-    <font color="red">【残業申請のお知らせ】</font>
-    <font class="box1" color="red"><%= link_to "件の通知があります", '#', :style=>"color:red;" %></font>
-  </div>
+
+  <% if @user.id == 2 && current_user?(@user) %>
+    <div>  
+      <% if @approval_sum5 == 0 %>  
+        <font>【残業申請のお知らせ】</font>
+      <% else %>
+        <font color="red">【残業申請のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum5}件の通知があります", attendances_edit_overwork_approval_user_path, :style=>"color:red;" %></font>
+      <% end %>
+    </div>
+  <% end %>
+  <% if @user.id == 3 && current_user?(@user) %>
+    <div>  
+      <% if @approval_sum6 == 0 %>  
+        <font>【残業申請のお知らせ】</font>
+      <% else %>
+        <font color="red">【残業申請のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum6}件の通知があります", attendances_edit_overwork_approval_user_path, :style=>"color:red;" %></font>
+      <% end %>
+    </div>
+  <% end %>
+  
   <br>
 
 <% if current_user?(@user) %>

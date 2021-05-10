@@ -43,7 +43,7 @@
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
                   <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
-                                                                                           { class: "form-control" } %>
+                                                                                           { class: "form-control", required: false } %>
               </td>  
             </tr>
           <% end %>

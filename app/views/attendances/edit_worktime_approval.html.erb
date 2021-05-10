@@ -36,8 +36,7 @@
        
        <% @worktime.each do |day| %>     
          <%= f.fields_for "attendances[]", day do |overtime| %>  
-           <% if day.user_id == user.id %>  
-             
+           <% if day.user_id == user.id && day.worktime_status == "申請中"%> 
              <% css_class = case $days_of_the_week[day.worked_on.wday]
       					when '土'
       						'text-primary'

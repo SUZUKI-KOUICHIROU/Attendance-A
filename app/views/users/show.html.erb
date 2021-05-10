@@ -174,7 +174,15 @@
           <% end %>
       </td>
       <td><%= day.business_contents if day.business_contents.present? %></td>
-      <td></td>
+      <td>
+         <% if day.worktime_status == "承認" %>
+           <%= "勤怠編集#{day.worktime_status}済" %>
+         <% elsif day.worktime_status == "否認" %> 
+           <%= "勤怠編集#{day.worktime_status}" %>
+         <% elsif day.worktime_status == "申請中" %>
+           <%= "勤怠編集#{day.worktime_status}" %>  
+         <% end %>
+      </td>
      </tr>
    </tbody>
      <% end %>

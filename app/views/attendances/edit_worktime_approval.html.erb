@@ -1,6 +1,6 @@
 <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
 　　
-  <% @worktime_user.each do |user| %>
+  <% @worktime_user.each do |user, attendances| %>
   
       <h1>【<%= user.name %>からの勤怠変更申請】</h1>
     
@@ -34,7 +34,7 @@
       </tr>
     </thead>
        
-       <% @work_time.each do |day| %>     
+       <% @worktime.each do |day| %>     
          <%= f.fields_for "attendances[]", day do |overtime| %>  
            <% if day.user_id == user.id %>  
              

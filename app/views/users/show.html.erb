@@ -58,7 +58,7 @@
 
   <div>
       <font color="red">【勤怠変更のお知らせ】</font>
-      <font class="box1" color="red"><%= link_to "件の通知があります", '#', :style=>"color:red;" %></font>
+      <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:red;" %></font>
   </div>      
 
   <% if @user.id == 2 && current_user?(@user) %>
@@ -187,8 +187,10 @@
        <td colspan="5"></td>
        <td>
        
-         <% if @approval.month_status == "承認" || @approval.month_status == "否認" %>
+         <% if @approval.month_status == "承認" %>
            所属長承認：<%= "#{@approval.month_check_superior}から#{@approval.month_status}済" %>
+         <% elsif @approval.month_status == "否認" %> 
+           所属長承認：<%= "#{@approval.month_check_superior}から#{@approval.month_status}" %>
          <% elsif @approval.month_status == "申請中" %>
            所属長承認：<%= "#{@approval.month_check_superior}へ#{@approval.month_status}" %>  
          <% else %>
@@ -197,7 +199,7 @@
        
          <% if current_user == @user %> 
            <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
-             <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "", selected: 1 },
+             <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
                                                  { class: "form-control", required: true } %>
              <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
            <% end %>

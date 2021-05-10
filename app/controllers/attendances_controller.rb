@@ -3,7 +3,7 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
-                                    edit_overwork_approval update_overwork_approval) 
+                                    edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
@@ -33,28 +33,21 @@ class AttendancesController < ApplicationController
   end
 
   def update_one_month
-    ActiveRecord::Base.transaction do
-      if attendances_invalid?()
-        attendances_params.each do |id, item|
-          attendance = Attendance.find(id)
-          attendance.update_attributes!(item)
-        end
-        flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
-        redirect_to user_url(date: params[:date])
-      else
-        flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
-        redirect_to attendances_edit_one_month_user_url(date: params[:date])
-      end
-    end
-  rescue ActiveRecord::RecordInvalid
-      flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
-      redirect_to attendances_edit_one_month_user_url(date: params[:date])
+    attendances_params.each do |id, item|   
+      attendance = Attendance.find(id)
+        if attendance.update_attributes(item)
+          flash[:success] = "勤怠変更を申請しました。"
+        else
+          flash[:danger] = "申請に失敗しました。"  
+        end 
+    end  
+    redirect_to user_url   
   end
 
   #勤怠変更申請ページ
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name}).where.not(attendances: {changed_finished_at: nil})
-    @work_time = Attendance.where(worktime_check_superior: @user.name).where.not(changed_finished_at: nil).order(:worked_on)
+    @worktime = Attendance.where.not(changed_finished_at: nil).order(:worked_on)
   end
   
   #勤怠変更承認
@@ -158,9 +151,10 @@ class AttendancesController < ApplicationController
   end 
 
   private
-    # 1ヶ月分の勤怠情報を扱います。
+    #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+      #params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior]).merge(user_id: params[:id], worktime_status: '申請中', worked_on: params[:date].to_d).to_h[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior])[:attendances]
     end
     
     #1ヶ月申請

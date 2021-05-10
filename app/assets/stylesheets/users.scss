@@ -112,3 +112,15 @@
 .modal-footer {
   text-align: center;
 }
+
+/* 勤怠変更 */
+
+#table-worktime-approval {
+  th { 
+    text-align: center;  
+  }
+  td {
+    text-align: center;  
+    vertical-align: middle;
+  }
+}

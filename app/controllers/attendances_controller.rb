@@ -32,9 +32,9 @@ class AttendancesController < ApplicationController
   def edit_one_month
   end
 
-  #勤怠変更ページ
+  #勤怠変更申請ページ
   def update_one_month
-    attendances_params.each do |id, item|   
+    attendances_params.each do |id, item| 
       attendance = Attendance.find(id)
         if attendance.update_attributes(item)
           flash[:success] = "勤怠変更を申請しました。"
@@ -45,10 +45,10 @@ class AttendancesController < ApplicationController
     redirect_to user_url   
   end
 
-  #勤怠変更申請ページ
+  #勤怠変更承認ページ
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name}).where.not(attendances: {changed_finished_at: nil})
-    @worktime = Attendance.where.not(changed_finished_at: nil).order(:worked_on)
+    @worktime = Attendance.where(worktime_status: "申請中").where.not(changed_finished_at: nil).order(:worked_on)
   end
   
   #勤怠変更承認
@@ -153,8 +153,7 @@ class AttendancesController < ApplicationController
   private
     #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior]).merge(user_id: params[:id], worktime_status: '申請中', worked_on: params[:date].to_d).to_h[:attendances]
-      #params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior])[:attendances]
     end
     
     #勤怠変更承認

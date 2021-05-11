@@ -176,11 +176,11 @@
       <td><%= day.business_contents if day.business_contents.present? %></td>
       <td>
          <% if day.worktime_status == "承認" %>
-           <%= "勤怠編集#{day.worktime_status}済" %>
+           <%= "勤怠編集承認済" %>
          <% elsif day.worktime_status == "否認" %> 
-           <%= "勤怠編集#{day.worktime_status}" %>
-         <% elsif day.worktime_status == "申請中" %>
-           <%= "勤怠編集#{day.worktime_status}" %>  
+           <%= "勤怠編集否認" %>
+         <% elsif day.worktime_status == "申請中" && day.changed_finished_at.present? %>
+           <%= "勤怠編集申請中" %>
          <% end %>
       </td>
      </tr>
@@ -196,11 +196,11 @@
        <td>
        
          <% if @approval.month_status == "承認" %>
-           所属長承認：<%= "#{@approval.month_check_superior}から#{@approval.month_status}済" %>
+           所属長承認：<%= "#{@approval.month_check_superior}から承認済" %>
          <% elsif @approval.month_status == "否認" %> 
-           所属長承認：<%= "#{@approval.month_check_superior}から#{@approval.month_status}" %>
+           所属長承認：<%= "#{@approval.month_check_superior}から否認" %>
          <% elsif @approval.month_status == "申請中" %>
-           所属長承認：<%= "#{@approval.month_check_superior}へ#{@approval.month_status}" %>  
+           所属長承認：<%= "#{@approval.month_check_superior}へ申請中" %>  
          <% else %>
            所属長承認：未  
          <% end %>

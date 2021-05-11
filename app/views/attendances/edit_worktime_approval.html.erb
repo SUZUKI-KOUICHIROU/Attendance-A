@@ -37,6 +37,7 @@
        <% @worktime.each do |day| %>     
          <%= f.fields_for "attendances[]", day do |overtime| %>  
            <% if day.user_id == user.id %> 
+             
              <% css_class = case $days_of_the_week[day.worked_on.wday]
       					when '土'
       						'text-primary'
@@ -59,7 +60,7 @@
                <td><%= day.note %></td>
                <td><%= overtime.select :worktime_status, ["申請中", "承認", "否認", "なし"], 
                                                          { include_blank: false, selected: 1 }, class: "form-control" %></td>
-               <td><%= overtime.check_box :overtime_change, {}, "true", "false" %></td>
+               <td><%= overtime.check_box :worktime_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>

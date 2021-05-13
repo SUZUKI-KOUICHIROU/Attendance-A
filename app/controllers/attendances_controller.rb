@@ -47,8 +47,8 @@ class AttendancesController < ApplicationController
 
   #勤怠変更承認ページ
   def edit_worktime_approval
-    @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name})
-    @worktime = Attendance.where(worktime_approval: 0).where.not(changed_finished_at: nil).order(:worked_on)
+    @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name, worktime_approval: "申請中"})
+    @worktime = Attendance.where(worktime_approval: "申請中").where.not(changed_finished_at: nil).order(:worked_on)
   end
   
   #勤怠変更承認
@@ -154,7 +154,7 @@ class AttendancesController < ApplicationController
     #勤怠変更申請
     def attendances_params
       #params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior]).merge(:worktime_status => "申請中").to_h[:attendances]
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior]).merge(attendance: [worktime_approval: "申請中"])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior, :worktime_approval])[:attendances]
     end
     
     #勤怠変更承認

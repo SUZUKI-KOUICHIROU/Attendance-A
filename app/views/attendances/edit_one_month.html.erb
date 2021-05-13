@@ -20,7 +20,7 @@
       <tbody>
         <% @attendances.each do |day| %>
           <%= f.fields_for "attendances[]", day do |attendance| %>
-            <%= attendance.hidden_field :worktime_approval, :value => 0 %>
+            <%= attendance.hidden_field :worktime_approval, :value => "申請中" %>
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
                   <% css_class = case %w{日 月 火 水 木 金 土}[day.worked_on.wday]

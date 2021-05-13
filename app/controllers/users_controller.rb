@@ -12,8 +12,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @worked_sum = @attendances.where.not(started_at: nil).count  
     @approval = @user.attendances.find_by(worked_on: @first_day)
+    @worked_sum = @attendances.where.not(started_at: nil).count  
     @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
     @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count
     @approval_sum5 = Attendance.where(superior_confirmation: "上長A").count

@@ -1,8 +1,7 @@
 class Attendance < ApplicationRecord
   belongs_to :user
 
-  attribute :worktime_status, :string, default: "申請中"
-
+  enum worktime_approval: { 申請中: 0, 承認: 1, 否認: 2, なし: 3 }
   
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }

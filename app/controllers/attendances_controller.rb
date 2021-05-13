@@ -5,7 +5,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval) 
   before_action :logged_in_user, only: %i(update edit_one_month)
-  before_action :set_one_month, only: %i(edit_one_month edit_worktime_approval)
+  before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -42,13 +42,13 @@ class AttendancesController < ApplicationController
           flash[:danger] = "申請に失敗しました。"  
         end 
     end  
-    redirect_to user_url  
+    redirect_to user_url
   end
 
   #勤怠変更承認ページ
   def edit_worktime_approval
-    @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name}).where.not(attendances: {changed_finished_at: nil})
-    @worktime = Attendance.where(worktime_status: "申請中").where.not(changed_finished_at: nil).order(:worked_on)
+    @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name})
+    @worktime = Attendance.where(worktime_approval: 0).where.not(changed_finished_at: nil).order(:worked_on)
   end
   
   #勤怠変更承認
@@ -153,12 +153,13 @@ class AttendancesController < ApplicationController
   private
     #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior]).merge(attendance: [:user_id => params[:id], :worktime_status => "申請中", :worked_on => params[:date].to_d]).to_h[:attendances]
+      #params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior]).merge(:worktime_status => "申請中").to_h[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :changed_started_at, :changed_finished_at, :note, :worktime_check_superior]).merge(attendance: [worktime_approval: "申請中"])[:attendances]
     end
     
     #勤怠変更承認
     def worktime_approval_params 
-      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :worktime_status, :worktime_change])[:attendances]
+      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :worktime_change, :worktime_approval])[:attendances]
     end
     
     #1ヶ月申請

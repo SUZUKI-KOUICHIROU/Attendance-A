@@ -1,7 +1,7 @@
 <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
 　　
-  <% @worktime_user.each do |user, attendances| %>
-  
+  <% @worktime_user.each do |user| %>
+
       <h1>【<%= user.name %>からの勤怠変更申請】</h1>
     
   <table class="table table-bordered table-condensed table-hover table-striped" id="table-worktime-approval">
@@ -37,7 +37,7 @@
        <% @worktime.each do |day| %>     
          <%= f.fields_for "attendances[]", day do |overtime| %>  
            <% if day.user_id == user.id %> 
-             
+            
              <% css_class = case $days_of_the_week[day.worked_on.wday]
       					when '土'
       						'text-primary'
@@ -58,8 +58,7 @@
                <td><%= day.changed_finished_at.strftime("%H") if day.changed_finished_at.present? %></td>
                <td><%= day.changed_finished_at.strftime("%M") if day.changed_finished_at.present? %></td>
                <td><%= day.note %></td>
-               <td><%= overtime.select :worktime_status, ["申請中", "承認", "否認", "なし"], 
-                                                         { include_blank: false, selected: 1 }, class: "form-control" %></td>
+               <td><%= overtime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: false}, { class: "form-control input-md" ,required: true } %></td>
                <td><%= overtime.check_box :worktime_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>

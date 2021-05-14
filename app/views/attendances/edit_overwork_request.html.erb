@@ -1,10 +1,13 @@
 
+
     <h1 class="modal-title">【残業申請】</h1>
 
     <div class="modal-body"></div>
       <div class="row">       
         <div class="col-md-12">
-          <%= form_with(model: @user, url: attendances_update_overwork_request_user_path(@user, date: params[:date]), local: true,  method: :patch) do |f| %>
+          
+          <%= form_with(model: @user, url: attendances_update_overwork_request_user_path(@user, date: params[:date]), local: true, method: :patch) do |f| %>
+            
             <table class="table table-bordered table-condensed table-hover" id="table-attendances">
               <thead>
                 <tr>
@@ -17,8 +20,10 @@
                 </tr>
               </thead>
               <tbody>
-                <% @attendances.each do |day| %>
-              
+              <% @attendances.each do |day| %>
+                <%= f.fields_for "attendances[]", day do |attendance| %>  
+                  <%= attendance.hidden_field :overwork_status, :value => "申請中" %>
+
               <% css_class = case $days_of_the_week[day.worked_on.wday]
       					when '土'
       						'text-primary'
@@ -33,11 +38,11 @@
                 <td><%= attendance.check_box :next_day, {}, "true", "false" %></td>
                 <td><%= attendance.text_field :business_contents, class: 'form-control' %></td>
                 <td><%= attendance.select :superior_confirmation, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
-                                                                  { class: "form-control", required: true } %></td>
+                                                                                           { class: "form-control", required: true } %></td>
               </tr>
-                  <% end %>
-                <% end %>
-              </tbody>
+                 <% end %>
+               <% end %>
+             </tbody>
             </table>
             <!--div class="modal-footer"-->
               <%= f.submit "変更を送信する", class: "btn btn-primary btn-block" %>

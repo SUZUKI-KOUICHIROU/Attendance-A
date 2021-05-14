@@ -35,7 +35,7 @@
     </thead>
        
        <% @worktime.each do |day| %>     
-         <%= f.fields_for "attendances[]", day do |overtime| %>  
+         <%= f.fields_for "attendances[]", day do |worktime| %>  
            <% if day.user_id == user.id %> 
             
              <% css_class = case $days_of_the_week[day.worked_on.wday]
@@ -58,8 +58,8 @@
                <td><%= day.changed_finished_at.strftime("%H") if day.changed_finished_at.present? %></td>
                <td><%= day.changed_finished_at.strftime("%M") if day.changed_finished_at.present? %></td>
                <td><%= day.note %></td>
-               <td><%= overtime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: false}, { class: "form-control input-md" ,required: true } %></td>
-               <td><%= overtime.check_box :worktime_change, {}, "true", "false" %></td>
+               <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: false}, { class: "form-control input-md", required: true } %></td>
+               <td><%= worktime.check_box :worktime_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>

@@ -116,12 +116,22 @@ class AttendancesController < ApplicationController
 
   #残業申請承認ページ
   def edit_overwork_approval
-    @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name}).where.not(attendances: {plans_endtime: nil})
-    @overwork = Attendance.where(superior_confirmation: @user.name).where.not(plans_endtime: nil).order(:worked_on)
+    @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name, overwork_status: "申請中"})
+    @overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
   end
-  
+
   #残業申請承認
   def update_overwork_approval
+    overwork_approval_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if params[:user][:attendances][id][:overwork_change] == "true"
+         attendance.update_attributes(item)
+          flash[:success] = "勤怠変更申請処理しました。"
+      else    
+          flash[:danger] = "変更する場合はチェックを入れてください。"
+      end      
+    end
+    redirect_to user_url
   end
 
    #勤怠変更承認
@@ -159,7 +169,7 @@ class AttendancesController < ApplicationController
     
     #勤怠変更承認
     def worktime_approval_params 
-      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :worktime_change, :worktime_approval])[:attendances]
+      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :worktime_approval])[:attendances]
     end
     
     #1ヶ月申請
@@ -174,12 +184,12 @@ class AttendancesController < ApplicationController
 
     #残業申請
     def overwork_request_params
-      params.require(:user).permit(attendances: [:plans_endtime, :next_day, :business_contents, :superior_confirmation])[:attendances]
+      params.require(:user).permit(attendances: [:plans_endtime, :next_day, :business_contents, :superior_confirmation, :overwork_status])[:attendances]
     end
     
     #残業申請承認
     def overwork_approval_params
-      params.require(:user).permit(attendances: [:overwork_status, :overwork_change])[:attendances]
+      params.require(:user).permit(attendances: [:overwork_status])[:attendances]
     end
 
     def admin_or_correct_user

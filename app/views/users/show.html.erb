@@ -182,6 +182,14 @@
          <% elsif day.worktime_approval == "否認" && day.changed_finished_at.present? %> 
            <%= "勤怠編集否認" %>
          <% end %>
+         <br>
+         <% if day.overwork_status == "申請中" && day.plans_endtime.present? %> 
+           <%= "残業申請中" %>
+         <% elsif day.overwork_status == "承認" && day.plans_endtime.present? %>
+           <%= "残業承認済" %>
+         <% elsif day.overwork_status == "否認" && day.plans_endtime.present? %> 
+           <%= "残業否認" %>
+         <% end %>
       </td>
      </tr>
    </tbody>

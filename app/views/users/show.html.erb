@@ -44,7 +44,6 @@
       <% end %>
     </div>
   <% end %>
-
   <% if @user.id == 3 && current_user?(@user) %>
     <div>   
       <% if @approval_sum2 == 0 %>
@@ -56,18 +55,34 @@
     </div>
   <% end %>
 
-  <div>
-      <font color="red">【勤怠変更のお知らせ】</font>
-      <font class="box1" color="red"><%= link_to "件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:red;" %></font>
-  </div>      
-
+  <% if @user.id == 2 && current_user?(@user) %>
+    <div>
+      <% if @approval_sum3 == 0 %>
+        <font>【勤怠変更のお知らせ】</font>
+      <% else %>
+        <font color="red">【勤怠変更のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum3}件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:red;" %></font>
+      <% end %>
+    </div>    
+  <% end %>
+  <% if @user.id == 3 && current_user?(@user) %>
+    <div>
+      <% if @approval_sum4 == 0 %>
+        <font>【勤怠変更のお知らせ】</font>
+      <% else %>
+        <font color="red">【勤怠変更のお知らせ】</font>
+        <font class="box"><%= link_to "#{@approval_sum4}件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:red;" %></font>
+      <% end %>
+    </div>    
+  <% end %>
+ 
   <% if @user.id == 2 && current_user?(@user) %>
     <div>  
       <% if @approval_sum5 == 0 %>  
         <font>【残業申請のお知らせ】</font>
       <% else %>
         <font color="red">【残業申請のお知らせ】</font>
-        <font class="box"><%= link_to "#{@approval_sum5}件の通知があります", attendances_edit_overwork_approval_user_path, :style=>"color:red;" %></font>
+        <font class="box"><%= link_to "#{@approval_sum5}件の通知があります", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:red;" %></font>
       <% end %>
     </div>
   <% end %>
@@ -77,7 +92,7 @@
         <font>【残業申請のお知らせ】</font>
       <% else %>
         <font color="red">【残業申請のお知らせ】</font>
-        <font class="box"><%= link_to "#{@approval_sum6}件の通知があります", attendances_edit_overwork_approval_user_path, :style=>"color:red;" %></font>
+        <font class="box"><%= link_to "#{@approval_sum6}件の通知があります", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:red;" %></font>
       <% end %>
     </div>
   <% end %>
@@ -133,7 +148,7 @@
     <tr>
       <td>
         <% if current_user?(@user) %> 
-          <%= link_to "残業申請", attendances_edit_overwork_request_user_path(@user, date: day.worked_on), class: "btn btn-primary" %>
+          <%= link_to "残業申請", attendances_edit_overwork_request_user_path(@user, date: day.worked_on), remote: true, class: "btn btn-primary" %>
         <% end %>
       </td>
       <td><%= l(day.worked_on, format: :short) %></td>
@@ -184,11 +199,11 @@
          <% end %>
          <br>
          <% if day.overwork_status == "申請中" && day.plans_endtime.present? %> 
-           <%= "残業申請中" %>
+           <%= "#{day.superior_confirmation}へ残業申請中" %>
          <% elsif day.overwork_status == "承認" && day.plans_endtime.present? %>
-           <%= "残業承認済" %>
+           <%= "#{day.superior_confirmation}から残業承認済" %>
          <% elsif day.overwork_status == "否認" && day.plans_endtime.present? %> 
-           <%= "残業否認" %>
+           <%= "#{day.superior_confirmation}から残業否認" %>
          <% end %>
       </td>
      </tr>
@@ -227,3 +242,6 @@
 </div>
 
 <div id="edit-month-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-worktime-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overwork-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overwork-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

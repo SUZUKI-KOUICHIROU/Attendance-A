@@ -1,4 +1,11 @@
-<%= form_with(model: @user, url: attendances_update_overwork_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+  <%= form_with(model: @user, url: attendances_update_overwork_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
 　　
   <% @overwork_user.each do |user| %>
     

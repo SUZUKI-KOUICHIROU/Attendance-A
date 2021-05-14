@@ -1,4 +1,6 @@
-<%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
+
+
+  <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
 　　
   <% @worktime_user.each do |user| %>
 

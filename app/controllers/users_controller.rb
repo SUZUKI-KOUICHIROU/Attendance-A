@@ -16,8 +16,8 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count  
     @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
     @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count
-    #@approval_sum3
-    #@approval_sum4
+    @approval_sum3 = Attendance.where(worktime_check_superior: "上長A", worktime_approval: "申請中").count
+    @approval_sum4 = Attendance.where(worktime_check_superior: "上長B", worktime_approval: "申請中").count 
     @approval_sum5 = Attendance.where(superior_confirmation: "上長A", overwork_status: "申請中").count
     @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
   end

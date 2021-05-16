@@ -105,12 +105,12 @@ class AttendancesController < ApplicationController
   def update_overwork_request
     overwork_request_params.each do |id, item| 
       attendance = Attendance.find(id)
-      if attendance.update_attributes(item)
-        flash[:success] = "残業を申請しました。"
-      else
-        flash[:danger] = "残業申請に失敗しました。"  
-      end 
-    end 
+        if attendance.update_attributes(item)
+          flash[:success] = "残業を申請しました。"
+        else
+          flash[:danger] = "残業申請に失敗しました。"  
+        end 
+    end
     redirect_to user_url
   end
 

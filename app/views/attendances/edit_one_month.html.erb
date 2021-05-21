@@ -1,6 +1,6 @@
 <% provide(:title, @user.name) %>
 
-<%= form_with(model: @user, url: attendances_update_one_month_user_path(@user, @attendance), local: true, method: :patch) do |f| %>
+<%= form_with(model: @user, url: attendances_update_one_month_user_path, local: true, method: :patch) do |f| %>
   
   <div>
     <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -21,6 +21,7 @@
         <% @attendances.each do |day| %>
           <%= f.fields_for "attendances[]", day do |attendance| %>
             <%= attendance.hidden_field :worktime_approval, :value => "申請中" %>
+
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
                   <% css_class = case %w{日 月 火 水 木 金 土}[day.worked_on.wday]
@@ -46,7 +47,7 @@
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
                   <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
-                                                                                           { class: "form-control", required: false } %>
+                                                                                             { class: "form-control" } %>
               </td>  
             </tr>
           <% end %>

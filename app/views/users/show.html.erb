@@ -53,7 +53,7 @@
             <font class="approval">【所属長承認申請のお知らせ】</font>  
           <% else %>
             <font class="approval-1">【所属長承認申請のお知らせ】</font>
-            <font class="box-1"><%= link_to "#{@approval_sum2}件の通知があります", attendances_edit_month_approval_user_path, remote: true %></font>
+            <font class="box-1"><%= link_to "#{@approval_sum2}件の通知があります", attendances_edit_month_approval_user_path, remote: true, :style=>"color:maroon;" %></font>
           <% end %>
         </div>
       <% end %>
@@ -270,7 +270,7 @@
            <font color="blue"><%= "【残業申請】#{day.superior_confirmation}から否認されました" %></font>
          <% end %>
       </td>
-     </tr>
+    </tr>
    </tbody>
      <% end %>
    <tfoot>

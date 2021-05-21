@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
 
     unless one_month.count == @attendances.count # それぞれの件数（日数）が一致するか評価します。
       ActiveRecord::Base.transaction do # トランザクションを開始します。
-        # 繰り返し処理により、1ヶ月分の勤怠データを生成します。
+      #繰り返し処理により、1ヶ月分の勤怠データを生成します。
         one_month.each { |day| @user.attendances.create!(worked_on: day) }
       end
       @attendances = @user.attendances.where(worked_on: @first_day..@last_day).order(:worked_on)

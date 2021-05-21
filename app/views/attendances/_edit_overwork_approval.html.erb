@@ -49,7 +49,7 @@
                    <% end %>
                </td>
                <td><%= day.business_contents %></td>
-               <td><%= overtime.select :overwork_status, Attendance.overwork_statuses.keys, {prompt: false}, { class: "form-control input-md", required: true } %></td>
+               <td><%= overtime.select :overwork_status, Attendance.overwork_statuses.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
                <td><%= overtime.check_box :overwork_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>

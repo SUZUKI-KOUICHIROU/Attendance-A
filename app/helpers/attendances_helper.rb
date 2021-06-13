@@ -20,11 +20,11 @@ module AttendancesHelper
     end
   end 
 
-  def worktime_tomorrow(changed_finished_at, changed_started_at, tomorrow)
+  def worktime_tomorrow(finished_at, started_at, tomorrow)
     unless tomorrow == true
-      format("%.2f", (changed_finished_at.to_f - changed_started_at.to_f)) 
+      format("%.2f", (finished_at.to_f - started_at.to_f)) 
     else
-      format("%.2f", (changed_finished_at.to_f - changed_started_at.to_f) + 24) 
+      format("%.2f", (finished_at.to_f - started_at.to_f) + 24) 
     end
   end
 

@@ -254,11 +254,11 @@
       </td>
       <td><%= day.business_contents if day.business_contents.present? %></td>
       <td>
-         <% if day.worktime_approval == "申請中" && day.changed_finished_at.present? %> 
+         <% if day.worktime_approval == "申請中" && day.finished_at.present? %> 
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}へ申請中" %></font>
-         <% elsif day.worktime_approval == "承認" && day.changed_finished_at.present? %>
+         <% elsif day.worktime_approval == "承認" && day.finished_at.present? %>
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}から承認済" %></font>
-         <% elsif day.worktime_approval == "否認" && day.changed_finished_at.present? %> 
+         <% elsif day.worktime_approval == "否認" && day.finished_at.present? %> 
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}から否認されました" %></font>
          <% end %>
          <br>

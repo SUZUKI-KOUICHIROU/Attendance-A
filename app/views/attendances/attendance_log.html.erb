@@ -3,12 +3,10 @@
 <h1>勤怠ログ</h1>
 
 <div class="col-md-10 col-md-offset-1">
-  <table class="table table-striped table-bordered table-condensed">
+  <table class="table table-striped table-bordered table-condensed" id="table-log">
       <%= link_to "リセット", '#', class: "btn btn-lg btn-default" %> 
-      <br>
-        <%= form_with(url: attendances_attendance_log_user_path, local: true) do |f| %>   
-          <%= f.date_select :arrival_date, {}, class: 'form-control', id: "date-select" %>
-      <br> 
+      <%= form_with(url: attendances_attendance_log_user_path, local: true) do |f| %>   
+          <%= f.date_select :date_from, {discard_day: true, use_month_numbers: true}, {class: "date-select datebtn btn-lg btn-default"} %>
       <% end %>
 
     <thead> 
@@ -26,13 +24,13 @@
     <!--% @bases.each do |base| %-->     
       <tr>
       <!--%= form_with(model: base, url: basis_path(base), local: true, method: :patch) do |f| %-->
-        <th>2020-09-03</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <td>2020-09-03</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
        <!--% end %-->
      <!--% end %-->

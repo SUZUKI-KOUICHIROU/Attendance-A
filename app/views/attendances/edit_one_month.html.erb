@@ -32,16 +32,16 @@
                      end %>
           <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
             <% if Date.current < day.worked_on %>
-              <td><%= attendance.time_field :changed_started_at, readonly: true, class: "form-control" %></td>
-              <td><%= attendance.time_field :changed_finished_at, readonly: true, class: "form-control" %></td>
+              <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
+              <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
             <% else %>
-              <td><%= attendance.time_field :changed_started_at, class: "form-control" %></td>
-              <td><%= attendance.time_field :changed_finished_at, class: "form-control" %></td>
+              <td><%= attendance.time_field :started_at, class: "form-control" %></td>
+              <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
             <% end %>
               <td><%= attendance.check_box :tomorrow, {}, "true", "false" %></td>
               <td>
-                  <% if day.changed_started_at.present? && day.changed_finished_at.present? %>
-                    <%= worktime_tomorrow(format_basic_info(day.changed_finished_at), format_basic_info(day.changed_started_at), day.tomorrow) %>
+                  <% if day.started_at.present? && day.finished_at.present? %>
+                    <%= worktime_tomorrow(format_basic_info(day.finished_at), format_basic_info(day.started_at), day.tomorrow) %>
                   <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>

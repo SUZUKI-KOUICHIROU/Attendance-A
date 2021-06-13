@@ -7,7 +7,7 @@ class AttendancesController < ApplicationController
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
-  
+
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
   def update
@@ -143,12 +143,12 @@ class AttendancesController < ApplicationController
   private
     #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
     end
     
     #勤怠変更承認
     def worktime_approval_params 
-      params.require(:user).permit(attendances: [:changed_started_at, :changed_finished_at, :worktime_approval, :worktime_change, :worktime_check_superior])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior])[:attendances]
     end
     
     #1ヶ月申請

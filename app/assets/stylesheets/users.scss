@@ -172,3 +172,23 @@
     vertical-align: middle;
   }
 }
+
+/* 勤怠ログ */
+
+#table-log {
+  th {  
+    text-align: center;  
+    vertical-align: middle;  
+    height: 38px;
+  }
+  td {
+    text-align: center;  
+    vertical-align: middle; 
+  }
+}
+
+.date-select {
+  display:block;
+  width: 150px;
+  height: 43px;
+}

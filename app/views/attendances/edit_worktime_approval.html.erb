@@ -51,14 +51,14 @@
              <tr>
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
+               <td><%= day.started_at_was if day.started_at.present? %></td>
+               <td><%= day.started_at_was if day.started_at.present? %></td>
+               <td><%= day.finished_at_was if day.finished_at.present? %></td>
+               <td><%= day.finished_at_was if day.finished_at.present? %></td>
                <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
                <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
                <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
                <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
-               <td><%= day.changed_started_at.strftime("%H") if day.changed_started_at.present? %></td>
-               <td><%= day.changed_started_at.strftime("%M") if day.changed_started_at.present? %></td>
-               <td><%= day.changed_finished_at.strftime("%H") if day.changed_finished_at.present? %></td>
-               <td><%= day.changed_finished_at.strftime("%M") if day.changed_finished_at.present? %></td>
                <td><%= day.note %></td>
                <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
                <td><%= worktime.check_box :worktime_change, {}, "true", "false" %></td>

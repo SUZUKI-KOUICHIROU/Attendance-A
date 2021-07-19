@@ -2,14 +2,16 @@
 
 <h1>勤怠ログ</h1>
 
+  <%= form_with(model: @user, url: attendances_update_attendance_log_user_path(@user, @attendance), local: true, method: :patch) do |f| %>   
+
 <div class="col-md-10 col-md-offset-1">
   <table class="table table-striped table-bordered table-condensed" id="table-log">
-      <%= link_to "リセット", '#', class: "btn btn-lg btn-default" %> 
-      <%= form_with(url: attendances_attendance_log_user_path, local: true) do |f| %>   
-          <%= f.date_select :date_from, {discard_day: true, use_month_numbers: true}, {class: "date-select datebtn btn-lg btn-default"} %>
+    <%= link_to "リセット", '#', class: "btn btn-lg btn-default" %> 
+          <%= f.date_select :date_form, {discard_day: true, use_month_numbers: true}, {class: "date-select datebtn btn-lg btn-default"} %>
+          <%= f.submit "月選択", class: "btn btn-lg btn-primary" %>
       <% end %>
-
-    <thead> 
+   
+    <thead>
       <tr>
         <th>日付</th>
         <th>変更前出社時間</th>
@@ -21,19 +23,19 @@
       </tr>
     </thead>
     <tbody>
-    <!--% @bases.each do |base| %-->     
+    
+      <% @attendance_day.each do |day| %>
+      
       <tr>
-      <!--%= form_with(model: base, url: basis_path(base), local: true, method: :patch) do |f| %-->
-        <td>2020-09-03</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><%= day.worked_on.strftime('%Y-%m-%d') %></td>
+        <td><%= day.started_at_in_database.strftime("%H:%M") %></td>
+        <td><%= day.finished_at_in_database.strftime("%H:%M") %></td>
+        <td><%= day.started_at.strftime("%H:%M") %></td>
+        <td><%= day.finished_at.strftime("%H:%M") %></td>
+        <td><%= day.worktime_check_superior %></td>
+        <td><%= day.updated_at.strftime('%Y-%m-%d') %></td>
       </tr>
-       <!--% end %-->
-     <!--% end %-->
+      <% end %>
     </tbody>
   </table>
 </div>

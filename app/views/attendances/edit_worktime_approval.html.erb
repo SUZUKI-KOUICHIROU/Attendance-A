@@ -51,10 +51,10 @@
              <tr>
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
-               <td><%= day.started_at_was if day.started_at.present? %></td>
-               <td><%= day.started_at_was if day.started_at.present? %></td>
-               <td><%= day.finished_at_was if day.finished_at.present? %></td>
-               <td><%= day.finished_at_was if day.finished_at.present? %></td>
+               <td><%= day.started_at_in_database.strftime("%H") if day.started_at.present?%></td>
+               <td><%= day.started_at_in_database.strftime("%M") if day.started_at.present?%></td>
+               <td><%= day.finished_at_in_database.strftime("%H") if day.finished_at.present?%></td>
+               <td><%= day.finished_at_in_database.strftime("%M") if day.finished_at.present?%></td>
                <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
                <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
                <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>

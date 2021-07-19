@@ -188,6 +188,13 @@
 }
 
 .date-select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, rgba(0,0,0,2.0) 50%),  linear-gradient(135deg, rgba(0,0,0,2.0) 50%, transparent 50%);
+  background-size: 5px 5px, 5px 5px;
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
   display:block;
   width: 150px;
   height: 43px;

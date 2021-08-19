@@ -7,8 +7,9 @@ class AttendancesController < ApplicationController
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
-  
-  
+  before_action :set_attendance_log, only: %i(update_attendance_log)
+ 
+ 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
   def update
@@ -134,30 +135,25 @@ class AttendancesController < ApplicationController
           flash[:danger] = "変更する場合はチェックを入れてください。"
       end      
     end
-    redirect_to user_url
+　　redirect_to user_url
   end
 
-  #勤怠ログ
+  勤怠ログ
   def attendance_log
     @attendance_day = Attendance.where(attendances: {worktime_approval: "承認", user_id: @user.id}).order(:worked_on)
+    @month = Attendance_log.find_by(params[:month_select])
   end
-  
+
   def update_attendance_log
-    #log_select_params.each do |id, item|
-      #attendance_date = Attendance.find(id)
-      attendance = Attendance.find(params[:id])
-      if attendance.update_attributes(log_select_params)   
-        flash[:success] = "日付選択。"
-        redirect_to attendances_attendance_log_user_path(@user)
-      end  
+    @attendance_date= @attendance_log.attendances.where(params[:id])  
+    if @attendance_date.update(log_select_params)
+      flash[:success] = "日付選択。"
+      redirect_to attendances_attendance_log_user_path(@user)
+    end
   end
 
-
+ 
   private
-    def log_select_params
-      params.require(:user).permit(attendances: [:date_form])[:attendances]
-    end
-
     #勤怠変更申請
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
@@ -188,6 +184,11 @@ class AttendancesController < ApplicationController
       params.require(:user).permit(attendances: [:overwork_status, :overwork_change])[:attendances]
     end
 
+    勤怠ログ
+    def log_select_params
+      params.require(:user).permit(:month_select)
+    end
+
     def admin_or_correct_user
       @user = User.find(params[:user_id]) if @user.blank?
       unless current_user?(@user) || current_user.admin?
@@ -195,10 +196,4 @@ class AttendancesController < ApplicationController
         redirect_to(root_url)
       end
     end
-
-   def date_form_join
-      date = params[:date_form]
-    # 年月日別々できたものを結合して新しいDate型変数を作って返す
-      @form = Date.new date["date_form(1i)"].to_i,date["date_form(2i)"].to_i, date["date(3i)"].to_i
-   end
 end

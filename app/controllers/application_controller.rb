@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
     @base = Base.find(params[:id])
   end
 
+  def set_attendance_log
+    @attendance_log = Attendance_log.find(params[:id])
+  end
+  
   def logged_in_user
     unless logged_in?
     flash[:danger] = "ログインしてください。"

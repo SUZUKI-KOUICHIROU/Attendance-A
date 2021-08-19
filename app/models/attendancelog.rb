@@ -1,0 +1,2 @@
+class Attendancelog < ApplicationRecord
+end

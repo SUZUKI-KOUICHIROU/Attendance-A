@@ -32,4 +32,7 @@ Rails.application.routes.draw do
   end
   resources :bases do
   end
+
+
+
 end

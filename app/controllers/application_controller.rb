@@ -4,19 +4,18 @@ class ApplicationController < ActionController::Base
 
   $days_of_the_week = %w{日 月 火 水 木 金 土}
 
-
   def set_user
     @user = User.find(params[:id])
   end
-  
+
   def set_base
     @base = Base.find(params[:id])
   end
-
-  def set_attendance_log
-    @attendance_log = Attendance_log.find(params[:id])
-  end
   
+  def set_log
+    @attendance_log = Attendancelog.find(params[:id])
+  end
+
   def logged_in_user
     unless logged_in?
     flash[:danger] = "ログインしてください。"

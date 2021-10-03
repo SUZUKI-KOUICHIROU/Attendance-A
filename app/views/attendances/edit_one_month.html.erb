@@ -46,8 +46,8 @@
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
-                  <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
-                                                                                             { class: "form-control" } %>
+                  <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
+                                        { include_blank: "選択してください", selected: 1 },{ class: "form-control" } %>
               </td>  
             </tr>
           <% end %>
@@ -58,7 +58,7 @@
   
 
   <div class="center">
-    <%= f.submit "編集を保存する", class: "btn btn-lg btn-primary" %>
+    <%= f.submit "勤怠変更申請", class: "btn btn-lg btn-primary" %>
     <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %> 
   </div>
     <% end %>

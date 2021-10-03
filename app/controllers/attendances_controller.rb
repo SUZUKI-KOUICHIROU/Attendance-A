@@ -1,14 +1,12 @@
 class AttendancesController < ApplicationController
 
   include AttendancesHelper
- 
+
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
-  before_action :set_attendance_log, only: %i(update_attendance_log)
- 
  
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -53,6 +51,7 @@ class AttendancesController < ApplicationController
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name, worktime_approval: "申請中"})
     @worktime = Attendance.where(worktime_approval: "申請中", worktime_check_superior: @user.name).order(:worked_on)
+    @first = Attendance.where(started_at: params[:date])
   end
   
   #勤怠変更承認
@@ -114,7 +113,7 @@ class AttendancesController < ApplicationController
         else
           flash[:danger] = "残業申請に失敗しました。"  
         end 
-      end
+    end
     redirect_to user_url
   end
 
@@ -128,31 +127,17 @@ class AttendancesController < ApplicationController
   def update_overwork_approval
     overwork_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:overwork_change] == "true"
-         attendance.update_attributes(item)
-          flash[:success] = "残業申請処理が完了しました。"
-      else    
+        if params[:user][:attendances][id][:overwork_change] == "true"
+          attendance.update_attributes(item)
+        flash[:success] = "残業申請処理が完了しました。"
+        else    
           flash[:danger] = "変更する場合はチェックを入れてください。"
-      end      
+        end      
     end
-　　redirect_to user_url
+    redirect_to user_url
   end
-
-  勤怠ログ
-  def attendance_log
-    @attendance_day = Attendance.where(attendances: {worktime_approval: "承認", user_id: @user.id}).order(:worked_on)
-    @month = Attendance_log.find_by(params[:month_select])
-  end
-
-  def update_attendance_log
-    @attendance_date= @attendance_log.attendances.where(params[:id])  
-    if @attendance_date.update(log_select_params)
-      flash[:success] = "日付選択。"
-      redirect_to attendances_attendance_log_user_path(@user)
-    end
-  end
-
  
+  
   private
     #勤怠変更申請
     def attendances_params
@@ -184,16 +169,15 @@ class AttendancesController < ApplicationController
       params.require(:user).permit(attendances: [:overwork_status, :overwork_change])[:attendances]
     end
 
-    勤怠ログ
-    def log_select_params
-      params.require(:user).permit(:month_select)
-    end
-
     def admin_or_correct_user
       @user = User.find(params[:user_id]) if @user.blank?
       unless current_user?(@user) || current_user.admin?
         flash[:danger] = "編集権限がありません。"
         redirect_to(root_url)
       end
+    end
+   
+    def get_changes
+      @change_cols = self.changes
     end
 end

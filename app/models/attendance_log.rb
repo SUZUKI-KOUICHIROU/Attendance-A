@@ -1,2 +1,0 @@
-class AttendanceLog < ApplicationRecord
-end

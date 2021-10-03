@@ -104,27 +104,27 @@
     <div class="col-md-6">
       <% if current_user?(@user) %>
         <div>
-          <% if @result_sum1 == 0 && @result_sum2 == 0 %>  
-            <font class="approval">【所属長承認申請結果】</font>
+          <% if @result_sum1 == 0 && @result_sum2 == 0 && @result_sum7 == 0 %>  
+            <font class="approval">【所属長承認申請】</font>
           <% else %>
-            <font class="approval-1">【所属長承認申請結果】</font>
-            <font class="approval" color="maroon"><%= "[承認#{@result_sum1}件　否認#{@result_sum2}件]" %></font>
+            <font class="approval-1">【所属長承認申請】</font>
+            <font class="approval" color="maroon"><%= "[申請中#{@result_sum7}件　承認#{@result_sum1}件　否認#{@result_sum2}件]" %></font>
           <% end %>
         </div>
         <div>
-          <% if @result_sum3 == 0 && @result_sum4 == 0 %>  
-            <font class="approval">【勤怠変更申請結果】</font>
+          <% if @result_sum3 == 0 && @result_sum4 == 0 && @result_sum8 == 0 %>  
+            <font class="approval">【勤怠変更申請】</font>
           <% else %>
-            <font class="approval-2">【勤怠変更申請結果】</font>
-            <font class="approval" color="green"><%= "[承認#{@result_sum3}件　否認#{@result_sum4}件]" %></font>
+            <font class="approval-2">【勤怠変更申請】</font>
+            <font class="approval" color="green"><%= "[申請中#{@result_sum8}件　承認#{@result_sum3}件　否認#{@result_sum4}件]" %></font>
           <% end %>
         </div>
         <div>
-          <% if @result_sum5 == 0 && @result_sum6 == 0  %>  
-            <font class="approval">【残業申請結果】</font>
+          <% if @result_sum5 == 0 && @result_sum6 == 0 && @result_sum9 == 0 %>  
+            <font class="approval">【残業申請】</font>
           <% else %>
-            <font class="approval-3">【残業申請結果】</font>
-            <font class="approval" color="blue"><%= "[承認#{@result_sum5}件　否認#{@result_sum6}件]" %></font>
+            <font class="approval-3">【残業申請】</font>
+            <font class="approval" color="blue"><%= "[申請中#{@result_sum9}件　承認#{@result_sum5}件　否認#{@result_sum6}件]" %></font>
           <% end %>
         </div>
       <% end %>   
@@ -135,27 +135,27 @@
 <% unless current_user.superior? %>
   <% if current_user?(@user) %>  
     <div>
-      <% if @result_sum1 == 0 && @result_sum2 == 0 %>  
-        <font class="approval">【所属長承認申請結果】</font>
+      <% if @result_sum1 == 0 && @result_sum2 == 0 && @result_sum7 == 0 %>  
+        <font class="approval">【所属長承認申請】</font>
       <% else %>
-        <font class="approval-1">【所属長承認申請結果】</font>
-        <font class="approval" color="maroon"><%= "[承認#{@result_sum1}件　否認#{@result_sum2}件]" %></font>
+        <font class="approval-1">【所属長承認申請】</font>
+        <font class="approval" color="maroon"><%= "[申請中#{@result_sum7}件　承認#{@result_sum1}件　否認#{@result_sum2}件]" %></font>
       <% end %>
     </div>
     <div>
-      <% if @result_sum3 == 0 && @result_sum4 == 0 %>  
-        <font class="approval">【勤怠変更申請結果】</font>
+      <% if @result_sum3 == 0 && @result_sum4 == 0 && @result_sum8 == 0 %>  
+        <font class="approval">【勤怠変更申請】</font>
       <% else %>
-        <font class="approval-2">【勤怠変更申請結果】</font>
-        <font class="approval" color="green"><%= "[承認#{@result_sum3}件　否認#{@result_sum4}件]" %></font>
+        <font class="approval-2">【勤怠変更申請】</font>
+        <font class="approval" color="green"><%= "[申請中#{@result_sum8}件　承認#{@result_sum3}件　否認#{@result_sum4}件]" %></font>
       <% end %>
     </div>
     <div>
-      <% if @result_sum5 == 0 && @result_sum6 == 0  %>  
-        <font class="approval">【残業申請結果】</font>
+      <% if @result_sum5 == 0 && @result_sum6 == 0 && @result_sum9 == 0 %>  
+        <font class="approval">【残業申請】</font>
       <% else %>
-        <font class="approval-3">【残業申請結果】</font>
-        <font class="approval" color="blue"><%= "[承認#{@result_sum5}件　否認#{@result_sum6}件]" %></font>
+        <font class="approval-3">【残業申請】</font>
+        <font class="approval" color="blue"><%= "[申請中#{@result_sum9}件　承認#{@result_sum5}件　否認#{@result_sum6}件]" %></font>
       <% end %>
     </div>
   <% end %>
@@ -168,14 +168,13 @@
     class: "btn btn-primary" %>
     <%= link_to "CSV出力", '#', class: "btn btn-primary" %>
   <br>
-    <%= link_to "勤怠修正ログ(承認済)", attendances_attendance_log_user_path, class: "btn btn-primary", id: "btn-fix" %>
+    <%= link_to "勤怠修正ログ(承認済)", edit_attendancelog_path, class: "btn btn-primary", id: "btn-fix" %>
   </div>
   <br>
   <div>  
 <% end %>
 
-<table class="table table-bordered table-condensed table-hover table-
-  striped" id="table-attendances">
+<table class="table table-bordered table-condensed table-hover table-striped" id="table-attendances">
 
   <thead>
     <tr>

@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210818232905) do
+ActiveRecord::Schema.define(version: 20210916033452) do
 
-  create_table "attendance_logs", force: :cascade do |t|
-    t.date "month_select"
+  create_table "attendancelogs", force: :cascade do |t|
+    t.date "month_form"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -40,7 +40,6 @@ ActiveRecord::Schema.define(version: 20210818232905) do
     t.boolean "worktime_change", default: false, null: false
     t.integer "worktime_approval", default: 0, null: false
     t.integer "overwork_status", default: 0, null: false
-    t.date "date_form"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -60,14 +59,14 @@ ActiveRecord::Schema.define(version: 20210818232905) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "basic_time", default: "2021-05-21 23:00:00"
-    t.datetime "work_time", default: "2021-05-21 22:30:00"
+    t.datetime "basic_time", default: "2021-09-21 23:00:00"
+    t.datetime "work_time", default: "2021-09-21 22:30:00"
     t.boolean "superior", default: false
     t.string "belong"
     t.integer "employee_number"
     t.integer "card_id"
-    t.datetime "designated_starttime", default: "2021-05-22 00:00:00"
-    t.datetime "designated_endtime", default: "2021-05-22 09:00:00"
+    t.datetime "designated_starttime", default: "2021-09-22 00:00:00"
+    t.datetime "designated_endtime", default: "2021-09-22 09:00:00"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

@@ -6,7 +6,7 @@
       </button>
 
   <%= form_with(model: @user, url: attendances_update_overwork_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
-　　
+　
   <% @overwork_user.each do |user| %>
     
       <h1>【<%= user.name %>からの残業申請】</h1>

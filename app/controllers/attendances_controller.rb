@@ -7,14 +7,15 @@ class AttendancesController < ApplicationController
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
- 
+
+  
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
   def update
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
     if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
+      if @attendance.update_columns(started_at: Time.current.change(sec: 0))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -39,19 +40,19 @@ class AttendancesController < ApplicationController
       unless params[:user][:attendances][id][:worktime_check_superior].blank?  
         if attendance.update_attributes(item)
           flash[:success] = "勤怠変更を申請しました。"
-        else
-          flash[:danger] = "申請に失敗しました。"  
-        end 
+          redirect_to user_url(date: params[:date])
+        else 
+          flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。<br>" + "※" + attendance.errors.full_messages.join
+          redirect_to attendances_edit_one_month_user_url(date: params[:date])
+        end
       end
-    end  
-    redirect_to user_url
-  end    
-  
+    end
+  end  
+
   #勤怠変更承認ページ
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name, worktime_approval: "申請中"})
     @worktime = Attendance.where(worktime_approval: "申請中", worktime_check_superior: @user.name).order(:worked_on)
-    @first = Attendance.where(started_at: params[:date])
   end
   
   #勤怠変更承認
@@ -136,8 +137,7 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url
   end
- 
-  
+
   private
     #勤怠変更申請
     def attendances_params
@@ -175,9 +175,5 @@ class AttendancesController < ApplicationController
         flash[:danger] = "編集権限がありません。"
         redirect_to(root_url)
       end
-    end
-   
-    def get_changes
-      @change_cols = self.changes
     end
 end

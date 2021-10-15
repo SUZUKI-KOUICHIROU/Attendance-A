@@ -17,13 +17,6 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
-  def self.search(search)
-    if search
-      where(['name LIKE ?', "%#{search}%"])
-    else
-      all
-    end
-  end
   
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
@@ -57,5 +50,31 @@ class User < ApplicationRecord
   # ユーザーのログイン情報を破棄します。
   def forget
     update_attribute(:remember_digest, nil)
+  end
+
+  #CSVインポート
+  def self.import(file)
+    CSV.foreach(file.path, headers: true) do |row|
+      # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
+      user = find_by(id: row["id"]) || new
+      # CSVからデータを取得し、設定する
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      # 保存する
+      user.save
+    end
+  end
+
+  # 更新を許可するカラムを定義
+  def self.updatable_attributes
+    ["name", "email", "belong", "employee_number", "card_id", "basic_time", 
+    "designated_starttime", "designated_endtime", "superior", "admin", "password"]
+  end
+
+  def self.search(search)
+    if search
+      where(['name LIKE ?', "%#{search}%"])
+    else
+      all
+    end 
   end
 end

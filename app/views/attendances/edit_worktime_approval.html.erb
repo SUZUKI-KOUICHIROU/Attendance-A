@@ -63,7 +63,6 @@
                <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
                <td><%= worktime.check_box :worktime_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
-               <td><%= day.previous_changes %></td>
              </tr>
            </tbody>
          <% end %>

@@ -2,8 +2,9 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i(show edit update destroy edit_basic_info update_basic_infos)
   before_action :logged_in_user, only: %i(index show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
-  before_action :admin_user, only: %i(destroy edit_basic_info update_basic_info)
+  before_action :admin_user, only: %i(index destroy working_employee edit_basic_info update_basic_info)
   before_action :not_admin_user, only: %i(show)
+  before_action :correct_superior_user, only: %i(show)
   before_action :set_one_month, only: %i(show)
   before_action :superior_choice, only: %i(show)
 
@@ -12,6 +13,16 @@ class UsersController < ApplicationController
     @users = User.paginate(page: params[:page]).search(params[:search])
   end
 
+  def import
+    # fileはtmpに自動で一時保存される
+    if User.import(params[:file])
+      flash[:success] = 'インポートしました。'
+    else
+      flash[:danger] = "インポート失敗しました。"
+    end
+    redirect_to users_url
+  end
+  
   def show
     @approval = @user.attendances.find_by(worked_on: @first_day)
     @worked_sum = @attendances.where.not(started_at: nil).count  
@@ -23,8 +34,8 @@ class UsersController < ApplicationController
     @approval_sum5 = Attendance.where(superior_confirmation: "上長A", overwork_status: "申請中").count
     @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
     #申請結果
-    @result_sum1 = Attendance.where(user_id: @user.id, month_status: "承認").count
-    @result_sum2 = Attendance.where(user_id: @user.id, month_status: "否認").count
+    @result_sum1 = Attendance.where(user_id: @user.id, month_status: "3").count
+    @result_sum2 = Attendance.where(user_id: @user.id, month_status: "4").count
     @result_sum7 = Attendance.where(user_id: @user.id, month_status: "申請中").count
     
     @result_sum3 = Attendance.where(user_id: @user.id, worktime_approval: "承認").count

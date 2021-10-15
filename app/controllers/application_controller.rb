@@ -33,10 +33,14 @@ class ApplicationController < ActionController::Base
   
   def not_admin_user
     unless !current_user.admin
-    flash[:danger] = "管理者は勤怠画面を閲覧できません。"    
+    #flash[:danger] = "管理者は勤怠画面を閲覧できません。"    
     redirect_to root_url
     end
   end   
+
+  def correct_superior_user
+    redirect_to(root_url) unless current_user?(@user) || current_user.superior?
+  end    
 
   def superior_choice
     @superiors = User && User.where(superior: true).where.not(id: current_user.id)

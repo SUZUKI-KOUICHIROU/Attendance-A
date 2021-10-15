@@ -283,9 +283,9 @@
        <td colspan="5"></td>
        <td>
        
-         <% if @approval.month_status == "承認" %>
+         <% if @approval.month_status == "3" %>
            <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}から承認済" %></font>
-         <% elsif @approval.month_status == "否認" %> 
+         <% elsif @approval.month_status == "4" %> 
            <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}から否認" %></font>
          <% elsif @approval.month_status == "申請中" %>
            <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}へ申請中" %></font>  

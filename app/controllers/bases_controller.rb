@@ -12,6 +12,7 @@ class BasesController < ApplicationController
 
   def create
     @base = Base.new(base_params)
+    
     if @base.save
       flash[:success] = "拠点情報を追加しました。"
     else

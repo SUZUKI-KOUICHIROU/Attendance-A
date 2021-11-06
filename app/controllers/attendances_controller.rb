@@ -1,13 +1,13 @@
 class AttendancesController < ApplicationController
 
   include AttendancesHelper
-
+ 
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
-
+  before_action :overwork_status_approval, only: %i(update_overwork_request)
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -42,7 +42,7 @@ class AttendancesController < ApplicationController
           flash[:success] = "勤怠変更を申請しました。"
           redirect_to user_url(date: params[:date])
         else 
-          flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。<br>" + "※" + attendance.errors.full_messages.join
+          flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。<br>" + attendance.errors.full_messages.join
           redirect_to attendances_edit_one_month_user_url(date: params[:date])
         end
       end
@@ -66,7 +66,7 @@ class AttendancesController < ApplicationController
         flash[:danger] = "変更する場合はチェックを入れてください。"
       end      
     end
-    redirect_to user_url
+    redirect_to user_url(date: params[:date])
   end
 
   #1ヶ月申請
@@ -112,16 +112,18 @@ class AttendancesController < ApplicationController
         if attendance.update_attributes(item)
           flash[:success] = "残業を申請しました。"
         else
-          flash[:danger] = "残業申請に失敗しました。"  
+          flash[:danger] = "申請中は申請できません。"   
         end 
     end
-    redirect_to user_url
+    #redirect_to user_url
+    redirect_to user_url(date: params[:date])
   end
 
   #残業申請承認ページ
   def edit_overwork_approval
     @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name, overwork_status: "申請中"})
-    @overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
+    #@overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
+    @overwork = Attendance.where(overwork_status: "申請中", superior_confirmation:  @user.name).order(:worked_on)
   end
 
   #残業申請承認

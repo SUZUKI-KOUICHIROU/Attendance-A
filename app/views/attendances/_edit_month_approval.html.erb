@@ -25,7 +25,7 @@
            <tbody>
              <tr>
                <td><%= "#{day.apply_month.mon}月" %></td>
-               <td><%= approval.select :month_status, [["なし", 1],  ["申請中", 2],  ["承認", 3], ["否認", 4]], 
+               <td><%= approval.select :month_status, [["なし", "1"],  ["申請中", "2"],  ["承認", "3"], ["否認", "4"]], 
                                                       { include_blank: false, selected: 2 }, class: "form-control" %></td>
                <td><%= approval.check_box :status_change, {}, "true", "false" %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
@@ -37,6 +37,7 @@
     <% end %>   
       <div class="center">
         <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+        <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %> 
       </div>
   <% end %>  
 </div>

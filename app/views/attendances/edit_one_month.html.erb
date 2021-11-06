@@ -1,6 +1,6 @@
 <% provide(:title, @user.name) %>
 
-<%= form_with(model: @user, url: attendances_update_one_month_user_path, local: true, method: :patch) do |f| %>
+<%= form_with(model: @user, url: attendances_update_one_month_user_path(date: @first_day), local: true, method: :patch) do |f| %>
   
   <div>
     <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -47,7 +47,7 @@
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
                   <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                        { include_blank: "選択してください", selected: 1 },{ class: "form-control" } %>
+                                        { include_blank: "選択してください", selected: 1 }, { class: "form-control" } %>
               </td>  
             </tr>
           <% end %>

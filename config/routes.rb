@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :users do
     collection { post :import }
   end
-  
+
   get 'bases/index'
 
   root 'static_pages#top'
@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   resources :users do
     member do
+      patch 'update_userinformation'
       get 'edit_basic_info'
       patch 'update_basic_info'
       #1か月
@@ -33,8 +34,6 @@ Rails.application.routes.draw do
       patch 'attendances/update_overwork_request'
       get 'attendances/edit_overwork_approval'
       patch 'attendances/update_overwork_approval'
-      #get 'attendancelogs/edit_log_month'
-      #patch 'attendancelogs/update_log_month'
   end
   resources :attendances, only: :update
   end

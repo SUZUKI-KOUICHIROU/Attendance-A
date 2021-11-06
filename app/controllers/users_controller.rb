@@ -1,52 +1,16 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i(show edit update destroy edit_basic_info update_basic_infos)
+  
+  require 'csv'
+
+  before_action :set_user, only: %i(show edit update update_userinformation destroy edit_basic_info update_basic_infos)
   before_action :logged_in_user, only: %i(index show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
-  before_action :admin_user, only: %i(index destroy working_employee edit_basic_info update_basic_info)
+  before_action :admin_user, only: %i(index update_userinformation destroy working_employee edit_basic_info update_basic_info)
   before_action :not_admin_user, only: %i(show)
   before_action :correct_superior_user, only: %i(show)
   before_action :set_one_month, only: %i(show)
   before_action :superior_choice, only: %i(show)
-
-
-  def index
-    @users = User.paginate(page: params[:page]).search(params[:search])
-  end
-
-  def import
-    # fileはtmpに自動で一時保存される
-    if User.import(params[:file])
-      flash[:success] = 'インポートしました。'
-    else
-      flash[:danger] = "インポート失敗しました。"
-    end
-    redirect_to users_url
-  end
   
-  def show
-    @approval = @user.attendances.find_by(worked_on: @first_day)
-    @worked_sum = @attendances.where.not(started_at: nil).count  
-    #申請お知らせ
-    @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
-    @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count
-    @approval_sum3 = Attendance.where(worktime_check_superior: "上長A", worktime_approval: "申請中").count
-    @approval_sum4 = Attendance.where(worktime_check_superior: "上長B", worktime_approval: "申請中").count 
-    @approval_sum5 = Attendance.where(superior_confirmation: "上長A", overwork_status: "申請中").count
-    @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
-    #申請結果
-    @result_sum1 = Attendance.where(user_id: @user.id, month_status: "3").count
-    @result_sum2 = Attendance.where(user_id: @user.id, month_status: "4").count
-    @result_sum7 = Attendance.where(user_id: @user.id, month_status: "申請中").count
-    
-    @result_sum3 = Attendance.where(user_id: @user.id, worktime_approval: "承認").count
-    @result_sum4 = Attendance.where(user_id: @user.id, worktime_approval: "否認").count
-    @result_sum8 = Attendance.where(user_id: @user.id, worktime_approval: "申請中").where.not(worktime_check_superior: nil).count
-    
-    @result_sum5 = Attendance.where(user_id: @user.id, overwork_status: "承認").count
-    @result_sum6 = Attendance.where(user_id: @user.id, overwork_status: "否認").count
-    @result_sum9 = Attendance.where(user_id: @user.id, overwork_status: "申請中").where.not(superior_confirmation: nil).count
-  end
-
   def new
     @user = User.new
   end
@@ -74,12 +38,70 @@ class UsersController < ApplicationController
     end
   end
 
+  def show
+    #CSV出力
+    @users = @user.attendances.where(worked_on: @first_day..@last_day, worktime_approval: "承認").order(:worked_on)
+ 
+    respond_to do |format|
+      format.html
+      format.csv do |csv|
+        send_users_csv(@users)
+      end
+    end
+
+    @approval = @user.attendances.find_by(worked_on: @first_day)
+    @worked_sum = @attendances.where.not(started_at: nil).count  
+    #申請お知らせ
+    @approval_sum1 = Attendance.where(month_check_superior: "上長A", month_status: "申請中").count
+    @approval_sum2 = Attendance.where(month_check_superior: "上長B", month_status: "申請中").count
+    @approval_sum3 = Attendance.where(worktime_check_superior: "上長A", worktime_approval: "申請中").count
+    @approval_sum4 = Attendance.where(worktime_check_superior: "上長B", worktime_approval: "申請中").count 
+    @approval_sum5 = Attendance.where(superior_confirmation: "上長A", overwork_status: "申請中").count
+    @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
+    #申請結果
+    @result_sum1 = Attendance.where(user_id: @user.id, month_status: "3").count
+    @result_sum2 = Attendance.where(user_id: @user.id, month_status: "4").count
+    @result_sum7 = Attendance.where(user_id: @user.id, month_status: "申請中").count
+    
+    @result_sum3 = Attendance.where(user_id: @user.id, worktime_approval: "承認").count
+    @result_sum4 = Attendance.where(user_id: @user.id, worktime_approval: "否認").count
+    @result_sum8 = Attendance.where(user_id: @user.id, worktime_approval: "申請中").where.not(worktime_check_superior: nil).count
+    
+    @result_sum5 = Attendance.where(user_id: @user.id, overwork_status: "承認").count
+    @result_sum6 = Attendance.where(user_id: @user.id, overwork_status: "否認").count
+    @result_sum9 = Attendance.where(user_id: @user.id, overwork_status: "申請中").where.not(superior_confirmation: nil).count
+  end
+
+  def index
+    @users = User.paginate(page: params[:page]).search(params[:search])
+  end
+
+  def update_userinformation
+    if @user.update_attributes(userinformation_params)
+      flash[:success] = "アカウント情報を更新しました。"
+      redirect_to users_url
+    else
+      render user  
+    end
+  end
+
   def destroy
     @user.destroy
     flash[:success] = "#{@user.name}のデータを削除しました。"
     redirect_to users_url
   end
 
+  #CSVインポート
+  def import
+    # fileはtmpに自動で一時保存される
+    if User.import(params[:file])
+      flash[:success] = 'インポートしました。'
+    else
+      flash[:danger] = "インポート失敗しました。"
+    end
+    redirect_to users_url
+  end
+  
   def edit_basic_info
   end
 
@@ -103,7 +125,30 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
     end
 
+    def userinformation_params
+      params.require(:user).permit(:name, :email, :belong, :employee_number, :card_id, :password, :basic_time, :designated_starttime, :designated_endtime)
+    end
+
     def basic_info_params
       params.require(:user).permit(:department, :basic_time, :work_time)
     end
-end 
+
+    #CSV出力
+    def send_users_csv(users)
+      #filename = Date.current.strftime("【%Y年%m月】") + @user.name
+      filename = @first_day.strftime("【%Y年%m月】") + @user.name
+      csv_data = CSV.generate do |csv|
+        column_names = %w(日付 出社 退社)
+        csv << column_names
+        users.each do |user|
+          column_values = [
+            user.worked_on.strftime("%Y年%-m月%-d日"),
+            user.started_at&.strftime("%H:%M"),
+            user.finished_at&.strftime("%H:%M"),
+          ]
+          csv << column_values
+        end
+      end
+      send_data(csv_data, filename: "#{filename}.csv")
+    end
+end

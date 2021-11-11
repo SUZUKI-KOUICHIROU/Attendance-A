@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210916033452) do
+ActiveRecord::Schema.define(version: 20211111230240) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -59,15 +59,17 @@ ActiveRecord::Schema.define(version: 20210916033452) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "basic_time", default: "2021-10-11 23:00:00"
-    t.datetime "work_time", default: "2021-10-11 22:30:00"
     t.boolean "superior", default: false
-    t.string "belong"
+    t.string "affiliation"
+    t.datetime "basic_work_time", default: "2021-11-11 23:00:00"
+    t.datetime "work_time", default: "2021-11-11 22:30:00"
+    t.datetime "designated_work_start_time", default: "2021-11-12 00:00:00"
+    t.datetime "designated_work_end_time", default: "2021-11-12 09:00:00"
     t.integer "employee_number"
-    t.integer "card_id"
-    t.datetime "designated_starttime", default: "2021-10-12 00:00:00"
-    t.datetime "designated_endtime", default: "2021-10-12 09:00:00"
+    t.string "uid"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["employee_number"], name: "index_users_on_employee_number", unique: true
+    t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
 end

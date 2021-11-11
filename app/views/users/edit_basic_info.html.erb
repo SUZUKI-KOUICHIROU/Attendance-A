@@ -8,8 +8,8 @@
     <%= form_with(model: @user, url: update_basic_info_user_path(@user), local: true, method: :patch) do |f| %>
       <%= render 'shared/error_messages', object: @user %>
       
-      <%= f.label :basic_time, "基本勤務時間", class: "label-#{yield(:class_text)}" %>
-      <%= f.time_field :basic_time, class: "form-control" %>
+      <%= f.label :basic_work_time, "基本勤務時間", class: "label-#{yield(:class_text)}" %>
+      <%= f.time_field :basic_work_time, class: "form-control" %>
       
       <%= f.label :work_time, "指定勤務時間", class: "label-#{yield(:class_text)}" %>
       <%= f.time_field :work_time, class: "form-control" %>

@@ -11,8 +11,10 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 100 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :belong, length: { in: 2..50 }, allow_blank: true
-  validates :basic_time, presence: true
+  validates :employee_number, presence: true, length: { maximum: 10 }, uniqueness: true 
+  validates :affiliation, length: { in: 2..50 }, allow_blank: true
+  validates :uid, length: { maximum: 10 }, allow_blank: true, uniqueness: true 
+  validates :basic_work_time, presence: true
   validates :work_time, presence: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
@@ -64,10 +66,10 @@ class User < ApplicationRecord
     end
   end
 
-  # 更新を許可するカラムを定義
+  # CVS更新を許可するカラムを定義
   def self.updatable_attributes
-    ["name", "email", "belong", "employee_number", "card_id", "basic_time", 
-    "designated_starttime", "designated_endtime", "superior", "admin", "password"]
+    ["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", 
+    "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
   end
 
   def self.search(search)

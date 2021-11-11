@@ -7,7 +7,7 @@ class AttendancesController < ApplicationController
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :set_one_month, only: %i(edit_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
-  before_action :overwork_status_approval, only: %i(update_overwork_request)
+  
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -112,18 +112,17 @@ class AttendancesController < ApplicationController
         if attendance.update_attributes(item)
           flash[:success] = "残業を申請しました。"
         else
-          flash[:danger] = "申請中は申請できません。"   
-        end 
+          flash[:danger] = "申請中に失敗しました。"   
+        end
     end
-    #redirect_to user_url
-    redirect_to user_url(date: params[:date])
+    redirect_to user_url
+    #redirect_to user_url(date: params[:date])
   end
 
   #残業申請承認ページ
   def edit_overwork_approval
     @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name, overwork_status: "申請中"})
-    #@overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
-    @overwork = Attendance.where(overwork_status: "申請中", superior_confirmation:  @user.name).order(:worked_on)
+    @overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
   end
 
   #残業申請承認

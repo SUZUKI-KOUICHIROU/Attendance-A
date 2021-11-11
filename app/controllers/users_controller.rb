@@ -78,11 +78,14 @@ class UsersController < ApplicationController
 
   def update_userinformation
     if @user.update_attributes(userinformation_params)
-      flash[:success] = "アカウント情報を更新しました。"
-      redirect_to users_url
+      flash[:success] = "#{@user.name}のアカウント情報を更新しました。"
+    elsif
+      userinformation_params[:name].blank?
+      flash[:danger] = "名前を入力してください。"
     else
-      render user  
+      flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")  
     end
+    redirect_to users_path
   end
 
   def destroy
@@ -126,7 +129,7 @@ class UsersController < ApplicationController
     end
 
     def userinformation_params
-      params.require(:user).permit(:name, :email, :belong, :employee_number, :card_id, :password, :basic_time, :designated_starttime, :designated_endtime)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 
     def basic_info_params

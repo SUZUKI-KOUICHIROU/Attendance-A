@@ -28,7 +28,7 @@
               <% @attendances.each do |day| %>
                 <%= f.fields_for "attendances[]", day do |attendance| %>  
                   <%= attendance.hidden_field :overwork_status, :value => "申請中" %>
-
+              
               <% css_class = case $days_of_the_week[day.worked_on.wday]
       					when '土'
       						'text-primary'
@@ -42,7 +42,7 @@
                 <td><%= attendance.time_select :plans_endtime, class: "form-control" %></td>
                 <td><%= attendance.check_box :next_day, {}, "true", "false" %></td>
                 <td><%= attendance.text_field :business_contents, class: 'form-control' %></td>
-                <td><%= attendance.select :superior_confirmation, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
+                <td><%= attendance.select :superior_confirmation, @superiors.pluck(:name), { include_blank: "申請先を選択", selected: 1 },
                                                                                            { class: "form-control", required: true } %></td>
               </tr>
                  <% end %>

@@ -31,13 +31,23 @@
                      'text-danger'
                      end %>
           <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
-            <% if Date.current < day.worked_on %>
-              <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-              <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
-            <% else %>
-              <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-              <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
-            <% end %>
+          
+              <!--% if Date.current < day.worked_on %-->
+              <td>
+                <% if day.started_at.present? %>    
+                  <%= attendance.time_field :started_at, class: "form-control" %>
+                <% else %>
+                  <%= attendance.time_field :change_started_at, class: "form-control" %>
+                <% end %>
+              </td>
+              <td>
+                <% if day.started_at.present? %>
+                  <%= attendance.time_field :finished_at, class: "form-control" %>
+                <% else %>
+                  <%= attendance.time_field :change_finished_at, class: "form-control" %>
+                <% end %>
+              </td>
+ 
               <td><%= attendance.check_box :tomorrow, {}, "true", "false" %></td>
               <td>
                   <% if day.started_at.present? && day.finished_at.present? %>
@@ -47,7 +57,7 @@
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td>
                   <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                        { include_blank: "選択してください", selected: 1 }, { class: "form-control" } %>
+                                        { include_blank: "申請先を選択", selected: 1 }, { class: "form-control" } %>
               </td>  
             </tr>
           <% end %>

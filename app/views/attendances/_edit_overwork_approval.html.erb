@@ -42,15 +42,15 @@
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
                <td><%= l(day.plans_endtime, format: :time) %></td>
-               <td><%= format_basic_info(@user.designated_endtime) %></td>
+               <td><%= format_basic_info(@user.designated_work_end_time) %></td>
                <td>
                    <% if day.plans_endtime.present? %>
-                     <%= overwork_times(format_basic_info(day.plans_endtime), format_basic_info(@user.designated_endtime), day.next_day) %>
+                     <%= overwork_times(format_basic_info(day.plans_endtime), format_basic_info(@user.designated_work_end_time), day.next_day) %>
                    <% end %>
                </td>
                <td><%= day.business_contents %></td>
                <td><%= overtime.select :overwork_status, Attendance.overwork_statuses.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
-               <td><%= overtime.check_box :overwork_change, {}, "true", "false" %></td>
+               <td><%= overtime.check_box :overwork_change, checked: day.new_record? %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>
@@ -61,6 +61,7 @@
    <% end %>   
       <div class="center">
         <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+        <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %> 
       </div>
   <% end %>  
 </div>

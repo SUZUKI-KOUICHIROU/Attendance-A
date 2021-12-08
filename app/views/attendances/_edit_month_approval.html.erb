@@ -27,7 +27,7 @@
                <td><%= "#{day.apply_month.mon}月" %></td>
                <td><%= approval.select :month_status, [["なし", "1"],  ["申請中", "2"],  ["承認", "3"], ["否認", "4"]], 
                                                       { include_blank: false, selected: 2 }, class: "form-control" %></td>
-               <td><%= approval.check_box :status_change, {}, "true", "false" %></td>
+               <td><%= approval.check_box :status_change, checked: day.new_record? %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>

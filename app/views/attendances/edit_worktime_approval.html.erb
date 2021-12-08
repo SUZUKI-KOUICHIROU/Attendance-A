@@ -1,6 +1,6 @@
 <% provide(:title, @user.name) %>
 
-  <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path(@user, @attendance), method: :patch, local: true) do |f| %>
+  <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path, method: :patch, local: true) do |f| %>
 　　
   <% @worktime_user.each do |user| %>
 
@@ -51,17 +51,31 @@
              <tr>
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
-               <td><%= day.started_at.strftime("%H") if day.started_at.present?%></td>
-               <td><%= day.started_at.strftime("%M") if day.started_at.present?%></td>
-               <td><%= day.finished_at.strftime("%H") if day.finished_at.present?%></td>
-               <td><%= day.finished_at.strftime("%M") if day.finished_at.present?%></td>
-               <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
-               <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
-               <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
-               <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
+               
+               <% if day.before_started_at.present? %>
+                 <td><%= day.before_started_at.strftime("%H") %></td>
+                 <td><%= day.before_started_at.strftime("%M") %></td>
+               <% else %>
+                 <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>  
+                 <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
+               <% end %>
+               
+               <% if day.before_finished_at.present? %>
+                 <td><%= day.before_finished_at.strftime("%H") %></td>
+                 <td><%= day.before_finished_at.strftime("%M") %></td>
+               <% else %>
+                 <td><%= day.finished_at.strftime("%H") if day.started_at.present? %></td>  
+                 <td><%= day.finished_at.strftime("%M") if day.started_at.present? %></td>
+               <% end %>
+               
+               <td><%= day.change_started_at.strftime("%H") if day.change_started_at.present? %></td>  
+               <td><%= day.change_started_at.strftime("%M") if day.change_started_at.present? %></td>
+               <td><%= day.change_finished_at.strftime("%H") if day.change_finished_at.present? %></td>
+               <td><%= day.change_finished_at.strftime("%M") if day.change_finished_at.present? %></td>
+               
                <td><%= day.note %></td>
                <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
-               <td><%= worktime.check_box :worktime_change, {}, "true", "false" %></td>
+               <td><%= worktime.check_box :worktime_change, checked: day.new_record? %></td>
                <td><%= link_to "確認", user_path(user, date: day.worked_on), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>

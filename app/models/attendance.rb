@@ -1,6 +1,7 @@
 class Attendance < ApplicationRecord
-  belongs_to :user
 
+  belongs_to :user
+  
   enum worktime_approval: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
   enum overwork_status: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
 
@@ -31,4 +32,6 @@ class Attendance < ApplicationRecord
   end
 end
 
+  
+  
   

@@ -81,7 +81,7 @@ class UsersController < ApplicationController
       flash[:success] = "#{@user.name}のアカウント情報を更新しました。"
     elsif
       userinformation_params[:name].blank?
-      flash[:danger] = "名前を入力してください。"
+      flash[:danger] = "名前が入力されていません。"
     else
       flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")  
     end

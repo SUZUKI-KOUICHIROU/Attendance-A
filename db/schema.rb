@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20211111230240) do
+ActiveRecord::Schema.define(version: 20211205024513) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -40,6 +40,11 @@ ActiveRecord::Schema.define(version: 20211111230240) do
     t.boolean "worktime_change", default: false, null: false
     t.integer "worktime_approval", default: 0, null: false
     t.integer "overwork_status", default: 0, null: false
+    t.datetime "before_started_at"
+    t.datetime "before_finished_at"
+    t.datetime "change_started_at"
+    t.datetime "change_finished_at"
+    t.date "approval_day"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -61,10 +66,10 @@ ActiveRecord::Schema.define(version: 20211111230240) do
     t.boolean "admin", default: false
     t.boolean "superior", default: false
     t.string "affiliation"
-    t.datetime "basic_work_time", default: "2021-11-11 23:00:00"
-    t.datetime "work_time", default: "2021-11-11 22:30:00"
-    t.datetime "designated_work_start_time", default: "2021-11-12 00:00:00"
-    t.datetime "designated_work_end_time", default: "2021-11-12 09:00:00"
+    t.datetime "basic_work_time", default: "2021-12-06 23:00:00"
+    t.datetime "work_time", default: "2021-12-06 22:30:00"
+    t.datetime "designated_work_start_time", default: "2021-12-07 00:00:00"
+    t.datetime "designated_work_end_time", default: "2021-12-07 09:00:00"
     t.integer "employee_number"
     t.string "uid"
     t.index ["email"], name: "index_users_on_email", unique: true

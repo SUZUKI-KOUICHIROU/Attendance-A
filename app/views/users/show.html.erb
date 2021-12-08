@@ -227,18 +227,28 @@
                 end
               %>
       <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
+      
       <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
-      <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
+      <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td> 
+      
       <td>
-          <% if current_user?(@user) %> 
+          <% if current_user?(@user) == day.started_at.nil? %> 
             <% if btn_text = attendance_state(day) %>
               <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
             <% end %>
           <% end %>
       </td>
+      
       <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
       <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
-      <td></td>
+
+      <td>
+          <% if current_user?(@user) == day.started_at.present? && day.finished_at.nil? %> 
+            <% if btn_text = attendance_state(day) %>
+              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% end %>
+          <% end %>
+      </td>
       <td>
           <% if day.started_at.present? && day.finished_at.present? %>
             <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
@@ -255,11 +265,11 @@
       </td>
       <td><%= day.business_contents if day.business_contents.present? %></td>
       <td>
-         <% if day.worktime_approval == "申請中" && day.finished_at.present? %> 
+         <% if day.worktime_approval == "申請中" %> 
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}へ申請中" %></font>
-         <% elsif day.worktime_approval == "承認" && day.finished_at.present? %>
+         <% elsif day.worktime_approval == "承認" %>
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}から承認済" %></font>
-         <% elsif day.worktime_approval == "否認" && day.finished_at.present? %> 
+         <% elsif day.worktime_approval == "否認" %> 
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}から否認されました" %></font>
          <% end %>
          <br>
@@ -295,7 +305,7 @@
        
          <% if current_user == @user %> 
            <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
-             <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "選択してください", selected: 1 },
+             <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "申請先を選択", selected: 1 },
                                                  { class: "form-control", required: true } %>
              <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
            <% end %>

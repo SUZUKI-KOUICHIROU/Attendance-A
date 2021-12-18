@@ -35,7 +35,11 @@ class AttendancesController < ApplicationController
     attendances_params.each do |id, item|   
       attendance = Attendance.find(id)
       unless params[:user][:attendances][id][:worktime_check_superior].blank?  
-        if attendance.update_attributes(item)
+        if params[:user][:attendances][id][:started_at].present? 
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
+          flash[:success] = "勤怠変更を申請しました。"
+          redirect_to user_url(date: params[:date])  
+        elsif attendance.update_attributes(item)
           flash[:success] = "勤怠変更を申請しました。"
           redirect_to user_url(date: params[:date])  
         else 

@@ -26,14 +26,14 @@
     <tbody>
     
       <% @attendance_day.each do |day| %>
-        <% if @select[0].strftime("%Y-%m") == day.worked_on.strftime('%Y-%m') %>
+        <% if @select[0]&.strftime("%Y-%m") == day.worked_on.strftime('%Y-%m') %>
       
       <tr>
         <td><%= day.worked_on.strftime('%Y-%m-%d') %></td>
-        <td><%= day.started_at.strftime("%H:%M") %></td>
-        <td><%= day.finished_at.strftime("%H:%M") %></td>
-        <td><%= day.started_at.strftime("%H:%M") %></td>
-        <td><%= day.finished_at.strftime("%H:%M") %></td>
+        <td><%= day.before_started_at&.strftime("%H:%M") %></td>
+        <td><%= day.before_finished_at&.strftime("%H:%M") %></td>
+        <td><%= day.started_at&.strftime("%H:%M") %></td>
+        <td><%= day.finished_at&.strftime("%H:%M") %></td>
         <td><%= day.worktime_check_superior %></td>
         <td><%= day.updated_at.strftime('%Y-%m-%d') %></td>
       </tr>

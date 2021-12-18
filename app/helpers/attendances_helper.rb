@@ -12,6 +12,10 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
     
+  def before_working_times(before_started_at, before_finished_at)
+    format("%.2f", (((before_finished_at - before_started_at) / 60) / 60.0))
+  end
+  
   def overwork_times(plans_endtime, designated_work_end_time, next_day)
     unless next_day == true
       format("%.2f", (plans_endtime.to_f - designated_work_end_time.to_f)) 
@@ -25,6 +29,14 @@ module AttendancesHelper
       format("%.2f", (finished_at.to_f - started_at.to_f)) 
     else
       format("%.2f", (finished_at.to_f - started_at.to_f) + 24) 
+    end
+  end
+
+  def worktime_change_tomorrow(change_finished_at, change_started_at, tomorrow)
+    unless tomorrow == true
+      format("%.2f", (change_finished_at.to_f - change_started_at.to_f)) 
+    else
+      format("%.2f", (change_finished_at.to_f - change_started_at.to_f) + 24) 
     end
   end
 

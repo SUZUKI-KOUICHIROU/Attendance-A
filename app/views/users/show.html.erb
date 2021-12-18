@@ -228,8 +228,24 @@
               %>
       <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
       
-      <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
-      <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td> 
+      <td>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+            <%= day.started_at&.strftime("%H") %>
+          <% elsif day.worktime_approval == "否認" %> 
+            <%= day.before_started_at&.strftime("%H") %>
+          <% else %>
+            <%= day.started_at&.strftime("%H") %>
+          <% end %>
+      </td>
+      <td>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+            <%= day.started_at&.strftime("%M") %>
+          <% elsif day.worktime_approval == "否認" %> 
+            <%= day.before_started_at&.strftime("%M") %>
+          <% else %>
+            <%= day.started_at&.strftime("%M") %>
+          <% end %>
+      </td> 
       
       <td>
           <% if current_user?(@user) == day.started_at.nil? %> 
@@ -239,9 +255,25 @@
           <% end %>
       </td>
       
-      <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
-      <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
-
+      <td>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+            <%= day.finished_at&.strftime("%H") %>
+          <% elsif day.worktime_approval == "否認" %> 
+            <%= day.before_finished_at&.strftime("%H") %>
+          <% else %>
+            <%= day.finished_at&.strftime("%H") %>
+          <% end %>
+      </td>
+      <td>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+            <%= day.finished_at&.strftime("%M") %>
+          <% elsif day.worktime_approval == "否認" %> 
+            <%= day.before_finished_at&.strftime("%M") %>
+          <% else %>
+            <%= day.finished_at&.strftime("%M") %>
+          <% end %>   
+      </td>
+      
       <td>
           <% if current_user?(@user) == day.started_at.present? && day.finished_at.nil? %> 
             <% if btn_text = attendance_state(day) %>
@@ -249,12 +281,22 @@
             <% end %>
           <% end %>
       </td>
+      
       <td>
-          <% if day.started_at.present? && day.finished_at.present? %>
-            <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
-            <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+          <% if day.started_at.present? && day.finished_at.present? %>      
+            <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+            <% elsif  day.worktime_approval == "否認" && day.before_started_at.present? %>
+              <%= str_times = before_working_times(day.before_started_at.floor_to(15.minutes), day.before_finished_at.floor_to(15.minutes)) %>   
+            <% elsif day.worktime_approval == "否認" && day.before_started_at.blank? %>
+              <%= %> 
+            <% else %>  
+              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>    
+            <% end %>
           <% end %>
       </td>
+      
       <td><%= day.note %></td>
       <td><%= day.plans_endtime.strftime('%H') if day.plans_endtime.present? %></td> 
       <td><%= day.plans_endtime.strftime('%M') if day.plans_endtime.present? %></td> 

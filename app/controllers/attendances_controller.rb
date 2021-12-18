@@ -15,13 +15,11 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     if @attendance.started_at.nil?
       if @attendance.update_columns(started_at: Time.current.change(sec: 0))
-        flash[:info] = "おはようございます！"
-      else
-        flash[:danger] = UPDATE_ERROR_MSG
+        flash[:info] = "出勤しました"
       end
     elsif @attendance.finished_at.nil? 
       if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
-        flash[:info] = "お疲れ様でした！"
+        flash[:info] = "退勤しました"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
@@ -37,7 +35,7 @@ class AttendancesController < ApplicationController
     attendances_params.each do |id, item|   
       attendance = Attendance.find(id)
       unless params[:user][:attendances][id][:worktime_check_superior].blank?  
-        if attendance.update_attributes(item.merge(before_started_at: attendance.change_started_at, before_finished_at: attendance.change_finished_at))
+        if attendance.update_attributes(item)
           flash[:success] = "勤怠変更を申請しました。"
           redirect_to user_url(date: params[:date])  
         else 
@@ -46,8 +44,8 @@ class AttendancesController < ApplicationController
         end
       end
     end
-  end  
-
+  end
+  
   #勤怠変更承認ページ
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name, worktime_approval: "申請中"})
@@ -58,16 +56,23 @@ class AttendancesController < ApplicationController
   def update_worktime_approval
     worktime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:worktime_change] == "1"
-        attendance.update_attributes(item)
+      if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認"
+        attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
         flash[:success] = "勤怠変更申請処理が完了しました。"
-      else    
+      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
+        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at))   
+        flash[:success] = "勤怠変更申請処理が完了しました。"  
+      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし" 
+        attendance.update_attributes(item.merge(started_at: nil, finished_at: nil))   
+        flash[:success] = "勤怠変更申請処理が完了しました。" 
+      else
         flash[:danger] = "変更する場合はチェックを入れてください。"
-      end      
+      end
     end
     redirect_to user_url(date: params[:date])
+    return
   end
-
+  
   #1ヶ月申請
   def update_month_apply
     @attendance = Attendance.where(user_id: month_params[:user_id], worked_on: params[:date])
@@ -77,7 +82,7 @@ class AttendancesController < ApplicationController
      else
        flash[:danger] = "申請先を選択してください。" 
      end
-     redirect_to user_url(date: params[:date])  
+     redirect_to user_url(date: params[:date]) 
   end
   
   #1ヶ月申請承認一覧ページ
@@ -90,13 +95,13 @@ class AttendancesController < ApplicationController
     superior_approval_params.each do |id, item|
       attendance = Attendance.find(id)
       if params[:user][:attendances][id][:status_change] == "1"
-         attendance.update_attributes(item)
-        flash[:success] = "1か月申請処理が完了しました。"
-      else    
+        attendance.update_attributes(item)
+        flash[:success] = "1か月申請処理が完了しました。"    
+      else
         flash[:danger] = "変更する場合はチェックを入れてください。"
-      end      
+      end
+      redirect_to user_url(date: params[:date])
     end
-    redirect_to user_url(date: params[:date])
   end
 
   #残業申請ページ
@@ -129,7 +134,7 @@ class AttendancesController < ApplicationController
       attendance = Attendance.find(id)
         if params[:user][:attendances][id][:overwork_change] == "1"
           attendance.update_attributes(item)
-        flash[:success] = "残業申請処理が完了しました。"
+          flash[:success] = "残業申請処理が完了しました。"
         else    
           flash[:danger] = "変更する場合はチェックを入れてください。"
         end      
@@ -140,7 +145,7 @@ class AttendancesController < ApplicationController
   private
     #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:change_started_at, :change_finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :before_started_at, :before_finished_at, :change_started_at, :change_finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
     end
     
     #勤怠変更承認

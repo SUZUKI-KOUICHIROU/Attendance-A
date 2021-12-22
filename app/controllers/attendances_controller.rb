@@ -61,8 +61,12 @@ class AttendancesController < ApplicationController
     worktime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
       if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認"
-        attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
-        flash[:success] = "勤怠変更申請処理が完了しました。"
+        if params[:user][:attendances][id][:change_started_at] == "1900-01-01 10:00:00"
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, change_started_at: started_at, change_finished_at: finished_at))
+          flash[:success] = "勤怠変更申請処理が完了しました。"
+        else attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
+             flash[:success] = "勤怠変更申請処理が完了しました。"
+        end
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
         attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at))   
         flash[:success] = "勤怠変更申請処理が完了しました。"  

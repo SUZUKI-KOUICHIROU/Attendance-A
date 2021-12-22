@@ -42,8 +42,8 @@
           <% if @approval_sum1 == 0 %>
             <font class="approval">【所属長承認申請のお知らせ】</font>
           <% else %>
-            <font class="approval-1">【所属長承認申請のお知らせ】</font>
-            <font class="box-1"><%= link_to "#{@approval_sum1}件の通知があります", attendances_edit_month_approval_user_path, remote: true, :style=>"color:maroon;" %></font>
+            <font class="approval-1"><%= link_to "【所属長承認申請のお知らせ】", attendances_edit_month_approval_user_path, remote: true, :style=>"color:maroon;" %></font>
+            <font class="box-1" color="maroon"><%= "#{@approval_sum1}件の通知があります" %></font>
           <% end %>
         </div>
       <% end %>
@@ -52,8 +52,8 @@
           <% if @approval_sum2 == 0 %>
             <font class="approval">【所属長承認申請のお知らせ】</font>  
           <% else %>
-            <font class="approval-1">【所属長承認申請のお知らせ】</font>
-            <font class="box-1"><%= link_to "#{@approval_sum2}件の通知があります", attendances_edit_month_approval_user_path, remote: true, :style=>"color:maroon;" %></font>
+            <font class="approval-1"><%= link_to "【所属長承認申請のお知らせ】", attendances_edit_month_approval_user_path, remote: true, :style=>"color:maroon;" %></font>
+            <font class="box-1" color="maroon"><%= "#{@approval_sum2}件の通知があります" %></font>
           <% end %>
         </div>
       <% end %>
@@ -63,8 +63,8 @@
           <% if @approval_sum3 == 0 %>
             <font class="approval">【勤怠変更申請のお知らせ】</font>
           <% else %>
-            <font class="approval-2">【勤怠変更申請のお知らせ】</font>
-            <font class="box-2"><%= link_to "#{@approval_sum3}件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="box-2" color="green"><%= "#{@approval_sum3}件の通知があります" %></font>
           <% end %>
         </div>    
       <% end %>
@@ -73,8 +73,8 @@
           <% if @approval_sum4 == 0 %>
             <font class="approval">【勤怠変更申請のお知らせ】</font>
           <% else %>
-            <font class="approval-2">【勤怠変更申請のお知らせ】</font>
-            <font class="box-2"><%= link_to "#{@approval_sum4}件の通知があります", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="box-2" color="green"><%= "#{@approval_sum4}件の通知があります" %></font>
           <% end %>
         </div>    
       <% end %>
@@ -84,8 +84,8 @@
           <% if @approval_sum5 == 0 %>  
             <font class="approval">【残業申請のお知らせ】</font>
           <% else %>
-            <font class="approval-3">【残業申請のお知らせ】</font>
-            <font class="box-3"><%= link_to "#{@approval_sum5}件の通知があります", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:blue;" %></font>
+            <font class="approval-3"><%= link_to "【残業申請のお知らせ】", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:blue;" %></font>
+            <font class="box-3" color="blue"><%= "#{@approval_sum5}件の通知があります" %></font>
           <% end %>
         </div>
       <% end %>
@@ -94,8 +94,8 @@
           <% if @approval_sum6 == 0 %>  
             <font class="approval">【残業申請のお知らせ】</font>
           <% else %>
-            <font class="approval-3">【残業申請のお知らせ】</font>
-            <font class="box-3"><%= link_to "#{@approval_sum6}件の通知があります", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:blue;" %></font>
+            <font class="approval-3"><%= link_to "【残業申請のお知らせ】", attendances_edit_overwork_approval_user_path, remote: true, :style=>"color:blue;" %></font>
+            <font class="box-3" color="blue"><%= "#{@approval_sum6}件の通知があります" %></font>
           <% end %>
         </div>
       <% end %>

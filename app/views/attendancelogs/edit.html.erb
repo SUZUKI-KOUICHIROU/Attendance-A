@@ -31,14 +31,18 @@
       <tr>
         <td><%= day.worked_on.strftime('%Y-%m-%d') %></td>
         
-        <td><%= day.change_started_at %></td>
-        <td><%= day.change_finished_at %></td>
+        
+        
+        <td><%= day.change_started_at&.strftime("%H:%M") %></td>
+        <td><%= day.change_finished_at&.strftime("%H:%M") %></td>
+        
         
         <td><%= day.started_at&.strftime("%H:%M") %></td>
         <td><%= day.finished_at&.strftime("%H:%M") %></td>
         
         <td><%= day.worktime_check_superior %></td>
         <td><%= day.updated_at.strftime('%Y-%m-%d') %></td>
+        <td><%= day.first_approval %></td>
       </tr>
         
         <% end %>

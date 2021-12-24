@@ -56,29 +56,19 @@ class AttendancesController < ApplicationController
     @worktime = Attendance.where(worktime_approval: "申請中", worktime_check_superior: @user.name).order(:worked_on)
   end
   
-  #勤怠変更承認
+ #勤怠変更承認
   def update_worktime_approval
     worktime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認"
-        if params[:user][:attendances][id][:change_started_at] == "1900-01-01 10:00:00"
-          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, change_started_at: started_at, change_finished_at: finished_at))
+      if attendance.first_approval == 0  
+        if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, change_started_at: attendance.before_started_at, change_finished_at: attendance.before_finished_at, first_approval: 1))
           flash[:success] = "勤怠変更申請処理が完了しました。"
-        else attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
-             flash[:success] = "勤怠変更申請処理が完了しました。"
         end
-      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at))   
-        flash[:success] = "勤怠変更申請処理が完了しました。"  
-      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし" 
-        attendance.update_attributes(item.merge(started_at: nil, finished_at: nil))   
-        flash[:success] = "勤怠変更申請処理が完了しました。" 
-      else
-        flash[:danger] = "変更する場合はチェックを入れてください。"
       end
     end
     redirect_to user_url(date: params[:date])
-    return
+    return 
   end
   
   #1ヶ月申請
@@ -153,12 +143,12 @@ class AttendancesController < ApplicationController
   private
     #勤怠変更申請
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :before_started_at, :before_finished_at, :change_started_at, :change_finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :tomorrow, :note, :worktime_check_superior, :worktime_approval, :first_approval])[:attendances]
     end
     
     #勤怠変更承認
     def worktime_approval_params 
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior, :first_approval])[:attendances]
     end
     
     #1ヶ月申請

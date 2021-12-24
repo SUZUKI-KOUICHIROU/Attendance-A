@@ -39,12 +39,15 @@ class AttendancesController < ApplicationController
           attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
           flash[:success] = "勤怠変更を申請しました。"
           redirect_to user_url(date: params[:date])  
+          return
         elsif attendance.update_attributes(item)
           flash[:success] = "勤怠変更を申請しました。"
           redirect_to user_url(date: params[:date])  
+          return
         else 
           flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。<br>" + attendance.errors.full_messages.join
           redirect_to attendances_edit_one_month_user_url(date: params[:date])
+          return
         end
       end
     end
@@ -60,11 +63,22 @@ class AttendancesController < ApplicationController
   def update_worktime_approval
     worktime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if attendance.first_approval == 0  
-        if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
+      if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
+        if attendance.first_approval == 0 
           attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, change_started_at: attendance.before_started_at, change_finished_at: attendance.before_finished_at, first_approval: 1))
           flash[:success] = "勤怠変更申請処理が完了しました。"
+        elsif attendance.first_approval == 1 
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
+          flash[:success] = "勤怠変更申請処理が完了しました。"
         end
+      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
+        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at))   
+        flash[:success] = "勤怠変更申請処理が完了しました。"  
+      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし" 
+        attendance.update_columns(before_started_at: nil, before_finished_at: nil, started_at: nil, finished_at: nil, note: nil, 
+                                  tomorrow: false, worktime_approval: "", worktime_change: "0", worktime_check_superior: "") 
+      else
+        flash[:danger] = "変更する場合はチェックを入れてください。"
       end
     end
     redirect_to user_url(date: params[:date])

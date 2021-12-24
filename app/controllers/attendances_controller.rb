@@ -5,7 +5,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
-  before_action :set_one_month, only: %i(edit_one_month)
+  before_action :set_one_month, only: %i(edit_one_month update_one_month)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -32,25 +32,22 @@ class AttendancesController < ApplicationController
 
   #勤怠変更申請
   def update_one_month
-    attendances_params.each do |id, item|   
-      attendance = Attendance.find(id)
-      unless params[:user][:attendances][id][:worktime_check_superior].blank?  
-        if params[:user][:attendances][id][:started_at].present? 
-          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
-          flash[:success] = "勤怠変更を申請しました。"
-          redirect_to user_url(date: params[:date])  
-          return
-        elsif attendance.update_attributes(item)
-          flash[:success] = "勤怠変更を申請しました。"
-          redirect_to user_url(date: params[:date])  
-          return
-        else 
-          flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。<br>" + attendance.errors.full_messages.join
-          redirect_to attendances_edit_one_month_user_url(date: params[:date])
-          return
-        end
-      end
-    end
+    ActiveRecord::Base.transaction do  
+      attendances_params.each do |id, item|   
+        attendance = Attendance.find(id)
+        unless params[:user][:attendances][id][:worktime_check_superior].blank? 
+          if params[:user][:attendances][id][:started_at].present?
+            attendance.update_attributes!(item.merge(approval_day: @first_day, before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
+          elsif attendance.update_attributes(item)
+          end   
+        end    
+      end      
+    end         
+    flash[:success] = "勤怠変更を申請しました。"
+    redirect_to user_url(date: params[:date])       
+  rescue ActiveRecord::RecordInvalid        
+    flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
+    redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
   
   #勤怠変更承認ページ

@@ -63,7 +63,7 @@
           <% if @approval_sum3 == 0 %>
             <font class="approval">【勤怠変更申請のお知らせ】</font>
           <% else %>
-            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, remote: true, :style=>"color:green;" %></font>
             <font class="box-2" color="green"><%= "#{@approval_sum3}件の通知があります" %></font>
           <% end %>
         </div>    
@@ -73,7 +73,7 @@
           <% if @approval_sum4 == 0 %>
             <font class="approval">【勤怠変更申請のお知らせ】</font>
           <% else %>
-            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, :style=>"color:green;" %></font>
+            <font class="approval-2"><%= link_to "【勤怠変更申請のお知らせ】", attendances_edit_worktime_approval_user_path, remote: true, :style=>"color:green;" %></font>
             <font class="box-2" color="green"><%= "#{@approval_sum4}件の通知があります" %></font>
           <% end %>
         </div>    
@@ -296,10 +296,17 @@
             <% end %>
           <% end %>
       </td>
-      
       <td><%= day.note %></td>
+      
+      <!--%残業申請 %-->
+      
       <td><%= day.plans_endtime.strftime('%H') if day.plans_endtime.present? %></td> 
       <td><%= day.plans_endtime.strftime('%M') if day.plans_endtime.present? %></td> 
+      
+      
+      
+      
+      
       <td>
           <% if day.plans_endtime.present? %>
             <%= overwork_times(format_basic_info(day.plans_endtime), format_basic_info(@user.designated_work_end_time), day.next_day) %>

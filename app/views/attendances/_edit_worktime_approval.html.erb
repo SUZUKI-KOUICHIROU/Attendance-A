@@ -1,5 +1,12 @@
 <% provide(:title, @user.name) %>
 
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
   <%= form_with(model: @user, url: attendances_update_worktime_approval_user_path, method: :patch, local: true) do |f| %>
 　　
   <% @worktime_user.each do |user| %>
@@ -51,7 +58,7 @@
              <tr>
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
-              
+               
                <td><%= day.before_started_at&.strftime("%H") %></td>  
                <td><%= day.before_started_at&.strftime("%M") %></td>
                <td><%= day.before_finished_at&.strftime("%H") %></td>  
@@ -66,7 +73,6 @@
                <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
                <td><%= worktime.check_box :worktime_change, checked: day.new_record? %></td>
                <td><%= link_to "確認", user_path(user, date: day.approval_day), class: "btn btn-sm btn-primary" %></td>
-               <td><%= day.first_approval %></td>
              </tr>
            </tbody>
          <% end %>
@@ -76,6 +82,7 @@
    <% end %>   
       <div class="center">
         <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+        <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %> 
       </div>
   <% end %>  
 </div>

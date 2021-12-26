@@ -35,12 +35,12 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do  
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
-        unless params[:user][:attendances][id][:worktime_check_superior].blank? 
-          if params[:user][:attendances][id][:started_at].present?
-            attendance.update_attributes!(item.merge(approval_day: @first_day, before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
-          elsif attendance.update_attributes(item)
-          end   
-        end    
+          unless params[:user][:attendances][id][:worktime_check_superior].blank?
+            if params[:user][:attendances][id][:started_at].present?
+              attendance.update_attributes!(item.merge(worktime_approval: "申請中", approval_day: @first_day, before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
+            elsif attendance.update_attributes(item)
+            end   
+          end    
       end      
     end         
     flash[:success] = "勤怠変更を申請しました。"

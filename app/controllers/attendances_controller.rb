@@ -141,10 +141,16 @@ class AttendancesController < ApplicationController
   def update_overwork_approval
     overwork_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-        if params[:user][:attendances][id][:overwork_change] == "1"
-          attendance.update_attributes(item)
-          flash[:success] = "残業申請処理が完了しました。"
-        else    
+        if params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "承認"
+           attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents))
+           flash[:success] = "残業申請処理が完了しました。"
+        elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "否認"
+              attendance.update_attributes(item)
+              flash[:success] = "残業申請処理が完了しました。"
+        elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "なし"
+              attendance.update_attributes(item.merge(plans_endtime: nil, business_contents: nil))
+              flash[:success] = "残業申請処理が完了しました。"
+        else  
           flash[:danger] = "変更する場合はチェックを入れてください。"
         end      
     end

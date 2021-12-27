@@ -299,20 +299,40 @@
       <td><%= day.note %></td>
       
       <!--%残業申請 %-->
-      
-      <td><%= day.plans_endtime.strftime('%H') if day.plans_endtime.present? %></td> 
-      <td><%= day.plans_endtime.strftime('%M') if day.plans_endtime.present? %></td> 
-      
-      
-      
-      
-      
+      <td>
+          <% if day.overwork_status == "申請中" || day.overwork_status == "承認" %>
+            <%= day.plans_endtime&.strftime('%H') %></td> 
+          <% elsif day.overwork_status == "否認" %>
+            <%= day.approval_overtime&.strftime('%H') %></td>  
+          <% else %>  
+            <%= day.plans_endtime&.strftime('%H') %></td>    
+          <% end %>
+      <td>
+          <% if day.overwork_status == "申請中" || day.overwork_status == "承認" %>
+            <%= day.plans_endtime&.strftime('%M') %></td> 
+          <% elsif day.overwork_status == "否認" %>
+            <%= day.approval_overtime&.strftime('%M') %></td>  
+          <% else %>  
+            <%= day.plans_endtime&.strftime('%M') %></td>    
+          <% end %>
       <td>
           <% if day.plans_endtime.present? %>
             <%= overwork_times(format_basic_info(day.plans_endtime), format_basic_info(@user.designated_work_end_time), day.next_day) %>
           <% end %>
       </td>
-      <td><%= day.business_contents if day.business_contents.present? %></td>
+      
+      <td>
+          <% if day.overwork_status == "申請中" || day.overwork_status == "承認" %>
+            <%= day.business_contents if day.business_contents.present? %>
+          <% elsif day.overwork_status == "否認" %>
+            <%= day.approval_contents if day.approval_contents.present? %>
+          <% end %>
+      </td>
+      
+      
+      
+      
+      
       <td>
          <% if day.worktime_approval == "申請中" %> 
            <font color="green"><%= "【勤怠変更】#{day.worktime_check_superior}へ申請中" %></font>

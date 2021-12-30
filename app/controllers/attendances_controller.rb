@@ -62,14 +62,16 @@ class AttendancesController < ApplicationController
       attendance = Attendance.find(id)
       if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
         if attendance.first_approval == 0 
-          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, change_started_at: attendance.before_started_at, change_finished_at: attendance.before_finished_at, first_approval: 1))
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at,
+                                                  change_started_at: attendance.before_started_at, change_finished_at: attendance.before_finished_at,
+                                                  before_note: attendance.note, approval_tomorrow: attendance.tomorrow, first_approval: 1))
           flash[:success] = "勤怠変更申請処理が完了しました。"
         elsif attendance.first_approval == 1 
-          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))
+          attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at, before_note: attendance.note, approval_tomorrow: attendance.tomorrow))
           flash[:success] = "勤怠変更申請処理が完了しました。"
         end
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at))   
+        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow))  
         flash[:success] = "勤怠変更申請処理が完了しました。"  
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし" 
         attendance.update_columns(before_started_at: nil, before_finished_at: nil, started_at: nil, finished_at: nil, note: nil, 
@@ -165,7 +167,7 @@ class AttendancesController < ApplicationController
     
     #勤怠変更承認
     def worktime_approval_params 
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior, :first_approval])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior, :first_approval, :tomorrow])[:attendances]
     end
     
     #1ヶ月申請

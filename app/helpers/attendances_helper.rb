@@ -8,21 +8,21 @@ module AttendancesHelper
     return false
   end 
 
-  def working_times(start, finish)
-    format("%.2f", (((finish - start) / 60) / 60.0))
+  def working_times(start, finish, tomorrow)
+    unless tomorrow == true
+      format("%.2f", (((finish - start) / 60) / 60.0))
+    else
+      format("%.2f", (((finish - start) / 60) / 60.0) + 24)  
+    end
   end
     
-  def before_working_times(before_started_at, before_finished_at)
-    format("%.2f", (((before_finished_at - before_started_at) / 60) / 60.0))
-  end
-  
-  def overwork_times(plans_endtime, designated_work_end_time, next_day)
-    unless next_day == true
-      format("%.2f", (plans_endtime.to_f - designated_work_end_time.to_f)) 
+  def before_working_times(before_started_at, before_finished_at, tomorrow)
+    unless tomorrow == true
+      format("%.2f", (((before_finished_at - before_started_at) / 60) / 60.0))
     else
-      format("%.2f", (plans_endtime.to_f - designated_work_end_time.to_f) + 24) 
+      format("%.2f", (((before_finished_at - before_started_at) / 60) / 60.0) + 24)  
     end
-  end 
+  end
 
   def worktime_tomorrow(finished_at, started_at, tomorrow)
     unless tomorrow == true
@@ -32,13 +32,29 @@ module AttendancesHelper
     end
   end
 
-  def worktime_change_tomorrow(change_finished_at, change_started_at, tomorrow)
+  def worktime_before_tomorrow(before_finished_at, before_started_at, tomorrow)
     unless tomorrow == true
-      format("%.2f", (change_finished_at.to_f - change_started_at.to_f)) 
+      format("%.2f", (before_finished_at.to_f - before_started_at.to_f)) 
     else
-      format("%.2f", (change_finished_at.to_f - change_started_at.to_f) + 24) 
+      format("%.2f", (before_finished_at.to_f - before_started_at.to_f) + 24) 
     end
   end
+
+  def overwork_times(plans_endtime, designated_work_end_time, next_day)
+    unless next_day == true
+      format("%.2f", (plans_endtime.to_f - designated_work_end_time.to_f)) 
+    else
+      format("%.2f", (plans_endtime.to_f - designated_work_end_time.to_f) + 24) 
+    end
+  end 
+
+  def approval_times(approval_overtime, designated_work_end_time, next_day)
+    unless next_day == true
+      format("%.2f", (approval_overtime.to_f - designated_work_end_time.to_f)) 
+    else
+      format("%.2f", (approval_overtime.to_f - designated_work_end_time.to_f) + 24) 
+    end
+  end 
 
   def attendances_invalid?
     attendances = true

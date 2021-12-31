@@ -35,12 +35,14 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do  
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
+        unless attendance.worktime_approval == "申請中"  
           unless params[:user][:attendances][id][:worktime_check_superior].blank?
             if params[:user][:attendances][id][:started_at].present?
               attendance.update_attributes!(item.merge(worktime_approval: "申請中", approval_day: @first_day, before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
             elsif attendance.update_attributes(item)
             end   
           end    
+        end
       end      
     end         
     flash[:success] = "勤怠変更を申請しました。"
@@ -91,7 +93,7 @@ class AttendancesController < ApplicationController
        @attendance.update_all(month_params)
        flash[:success] = "申請しました。"
      else
-       flash[:danger] = "申請先を選択してください。" 
+       flash[:danger] = "申請中です。" 
      end
      redirect_to user_url(date: params[:date]) 
   end
@@ -112,6 +114,7 @@ class AttendancesController < ApplicationController
         flash[:danger] = "変更する場合はチェックを入れてください。"
       end
       redirect_to user_url(date: params[:date])
+      return
     end
   end
 
@@ -124,7 +127,7 @@ class AttendancesController < ApplicationController
   def update_overwork_request
     overwork_request_params.each do |id, item| 
       attendance = Attendance.find(id)
-        if attendance.update_attributes(item)
+        if attendance.update_attributes(item.merge(overwork_status: "申請中"))
           flash[:success] = "残業を申請しました。"
         else
           flash[:danger] = "残業申請に失敗しました。"   
@@ -136,7 +139,7 @@ class AttendancesController < ApplicationController
   #残業申請承認ページ
   def edit_overwork_approval
     @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name, overwork_status: "申請中"})
-    @overwork = Attendance.where(overwork_status: "申請中").where.not(plans_endtime: nil).order(:worked_on)
+    @overwork = Attendance.where(overwork_status: "申請中", superior_confirmation: @user.name).where.not(plans_endtime: nil).order(:worked_on)
   end
 
   #残業申請承認
@@ -144,10 +147,10 @@ class AttendancesController < ApplicationController
     overwork_approval_params.each do |id, item|
       attendance = Attendance.find(id)
         if params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "承認"
-           attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents))
+           attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents, approval_next: attendance.next_day))
            flash[:success] = "残業申請処理が完了しました。"
         elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "否認"
-              attendance.update_attributes(item)
+              attendance.update_attributes(item.merge(next_day: attendance.approval_next))
               flash[:success] = "残業申請処理が完了しました。"
         elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "なし"
               attendance.update_attributes(item.merge(plans_endtime: nil, business_contents: nil))

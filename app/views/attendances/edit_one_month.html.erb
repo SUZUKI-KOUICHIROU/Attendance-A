@@ -52,8 +52,16 @@
           </td>
           <td><%= attendance.text_field :note, class: "form-control" %></td>
           <td>
-             <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                    { include_blank: "申請先を選択", selected: 1 }, { class: "form-control" } %>
+              <% if day.worktime_approval == "申請中" && day.worktime_check_superior == "上長A" %>
+                <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
+                                      { selected: "上長A" }, { class: "form-control" } %>
+              <% elsif day.worktime_approval == "申請中" && day.worktime_check_superior == "上長B"  %>
+                <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
+                                      { selected: "上長B" }, { class: "form-control" } %>
+              <% else %>
+                <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
+                                      { include_blank: "申請先選択", selected: 1 }, { class: "form-control" } %>
+              <% end %>
           </td>  
       </tr>
           <% end %>

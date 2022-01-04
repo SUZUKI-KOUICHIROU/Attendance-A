@@ -2,16 +2,17 @@
 
 <h1>勤怠ログ</h1>
 
-  <%= form_with(model: @attendancelog, url: attendancelogs_path, local: true, method: :post) do |f| %>   
+  <%= form_with(model: @attendancelog, url: attendancelogs_path, local: true, method: :post) do |f| %>  
+  
+    <div class="month-btn">  
+      <%= f.date_select :month_form, {discard_day: true}, {class: "date-btn btn-lg btn-default"}  %>  
+      <%= f.submit "検索", class: "search-btn btn-lg btn-primary" %>
+    </div>
+  
+  <% end %>
 
 <div class="col-md-10 col-md-offset-1">
   <table class="table table-striped table-bordered table-condensed" id="table-log">
-
-  <%= link_to "リセット", '#', class: "btn btn-lg btn-default" %> 
-  <%= f.date_select :month_form, {discard_day: true, use_month_numbers: true}, {class: "date-select datebtn btn-lg btn-default"} %></td>
-  <%= f.submit "月選択", class: "btn btn-lg btn-primary" %>
-  
-  <% end %>
 
     <thead>
         <th>日付</th>

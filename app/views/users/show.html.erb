@@ -382,9 +382,10 @@
        
          <% if current_user == @user %> 
            <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+             <%= f.hidden_field :month_status, :value => "申請中" %>
              <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "申請先を選択", selected: 1 },
                                                  { class: "form-control", required: true } %>
-             <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
+               <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>
            <% end %>
          <% end %>
        </td>

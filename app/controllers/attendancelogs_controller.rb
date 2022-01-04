@@ -10,9 +10,6 @@ class AttendancelogsController < ApplicationController
   def create
     @attendance_log = Attendancelog.new(log_params)
     if @attendance_log.save
-      flash[:success] = '月選択しました。'
-    else
-      flash[:danger] = "失敗しました。"  
     end
     redirect_to edit_attendancelog_path(current_user)
   end

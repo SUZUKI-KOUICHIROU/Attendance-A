@@ -5,7 +5,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
-  before_action :set_one_month, only: %i(edit_one_month update_one_month)
+  before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -35,14 +35,12 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do  
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
-        unless attendance.worktime_approval == "申請中"  
-          unless params[:user][:attendances][id][:worktime_check_superior].blank?
-            if params[:user][:attendances][id][:started_at].present?
-              attendance.update_attributes!(item.merge(worktime_approval: "申請中", approval_day: @first_day, before_started_at: attendance.started_at, before_finished_at: attendance.finished_at))  
-            elsif attendance.update_attributes(item)
-            end   
-          end    
-        end
+        if params[:user][:attendances][id][:started_at].present? && params[:user][:attendances][id][:worktime_check_superior].present? 
+          attendance.update_attributes!(item.merge(worktime_approval: "申請中", approval_day: @first_day, before_started_at: attendance.started_at, 
+                                                   before_finished_at: attendance.finished_at, before_note: attendance.note))  
+        elsif params[:user][:attendances][id][:worktime_check_superior].present?
+          attendance.update_attributes!(item)
+        end   
       end      
     end         
     flash[:success] = "勤怠変更を申請しました。"
@@ -50,8 +48,8 @@ class AttendancesController < ApplicationController
   rescue ActiveRecord::RecordInvalid        
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
-  end
-  
+  end       
+        
   #勤怠変更承認ページ
   def edit_worktime_approval
     @worktime_user = User.joins(:attendances).group("users.id").where(attendances: {worktime_check_superior: @user.name, worktime_approval: "申請中"})
@@ -62,7 +60,9 @@ class AttendancesController < ApplicationController
   def update_worktime_approval
     worktime_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
+      if params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "申請中" 
+        flash[:danger] = "指示者確認が申請中のままです。"
+      elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "承認" 
         if attendance.first_approval == 0 
           attendance.update_attributes(item.merge(before_started_at: attendance.started_at, before_finished_at: attendance.finished_at,
                                                   change_started_at: attendance.before_started_at, change_finished_at: attendance.before_finished_at,
@@ -73,8 +73,8 @@ class AttendancesController < ApplicationController
           flash[:success] = "勤怠変更申請処理が完了しました。"
         end
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow))  
-        flash[:success] = "勤怠変更申請処理が完了しました。"  
+        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow, note: attendance.before_note))  
+        flash[:success] = "勤怠変更申請処理が完了しました。"
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし" 
         attendance.update_columns(before_started_at: nil, before_finished_at: nil, started_at: nil, finished_at: nil, note: nil, 
                                   tomorrow: false, worktime_approval: "", worktime_change: "0", worktime_check_superior: "") 
@@ -89,15 +89,15 @@ class AttendancesController < ApplicationController
   #1ヶ月申請
   def update_month_apply
     @attendance = Attendance.where(user_id: month_params[:user_id], worked_on: params[:date])
-     unless month_params[:month_check_superior].blank?
-       @attendance.update_all(month_params)
-       flash[:success] = "申請しました。"
-     else
-       flash[:danger] = "申請中です。" 
-     end
+    unless month_params[:month_check_superior].blank?
+      @attendance.update_all(month_params)
+        flash[:success] = "申請しました。"
+    else
+       flash[:danger] = "申請に失敗しました。" 
+    end
      redirect_to user_url(date: params[:date]) 
-  end
-  
+  end 
+    
   #1ヶ月申請承認一覧ページ
   def edit_month_approval
     @attendances = Attendance.where(month_status: "申請中", month_check_superior: @user.name).order(:user_id).order(:apply_month).group_by(&:user_id)
@@ -107,7 +107,9 @@ class AttendancesController < ApplicationController
   def update_month_approval
     superior_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:status_change] == "1"
+      if params[:user][:attendances][id][:status_change] == "1" && params[:user][:attendances][id][:month_status] == "2"
+        flash[:danger] = "指示者確認が申請中のままです。"
+      elsif params[:user][:attendances][id][:status_change] == "1"
         attendance.update_attributes(item)
         flash[:success] = "1か月申請処理が完了しました。"    
       else
@@ -127,11 +129,11 @@ class AttendancesController < ApplicationController
   def update_overwork_request
     overwork_request_params.each do |id, item| 
       attendance = Attendance.find(id)
-        if attendance.update_attributes(item.merge(overwork_status: "申請中"))
-          flash[:success] = "残業を申請しました。"
-        else
-          flash[:danger] = "残業申請に失敗しました。"   
-        end
+      if attendance.update_attributes(item.merge(overwork_status: "申請中", approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents))
+        flash[:success] = "残業申請しました。"
+      else
+        flash[:danger] = "残業申請に失敗しました。"
+      end
     end
     redirect_back(fallback_location: user_url)
   end
@@ -146,15 +148,17 @@ class AttendancesController < ApplicationController
   def update_overwork_approval
     overwork_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-        if params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "承認"
-           attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents, approval_next: attendance.next_day))
-           flash[:success] = "残業申請処理が完了しました。"
+        if params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "申請中"    
+          flash[:danger] = "指示者確認が申請中のままです。"
+        elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "承認"
+          attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents, approval_next: attendance.next_day))
+          flash[:success] = "残業申請処理が完了しました。"
         elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "否認"
-              attendance.update_attributes(item.merge(next_day: attendance.approval_next))
-              flash[:success] = "残業申請処理が完了しました。"
+          attendance.update_attributes(item.merge(plans_endtime: attendance.approval_overtime, next_day: attendance.approval_next, business_contents: attendance.approval_contents))
+          flash[:success] = "残業申請処理が完了しました。"
         elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "なし"
-              attendance.update_attributes(item.merge(plans_endtime: nil, business_contents: nil))
-              flash[:success] = "残業申請処理が完了しました。"
+          attendance.update_attributes(item.merge(plans_endtime: nil, business_contents: nil))
+          flash[:success] = "残業申請処理が完了しました。"
         else  
           flash[:danger] = "変更する場合はチェックを入れてください。"
         end      
@@ -175,8 +179,8 @@ class AttendancesController < ApplicationController
     
     #1ヶ月申請
     def month_params
-      params.require(:user).permit(:month_check_superior).merge(user_id: params[:id], month_status: '申請中', apply_month: params[:date].to_date).to_h
-    end
+      params.require(:user).permit(:month_check_superior, :month_status).merge(user_id: params[:id], month_status: '申請中', apply_month: params[:date].to_date).to_h
+    end  
 
     #1ヶ月承認
     def superior_approval_params

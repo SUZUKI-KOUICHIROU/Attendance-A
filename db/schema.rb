@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220105063550) do
+ActiveRecord::Schema.define(version: 20220105230316) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -32,14 +32,12 @@ ActiveRecord::Schema.define(version: 20220105063550) do
     t.boolean "status_change", default: false, null: false
     t.datetime "plans_endtime"
     t.string "business_contents"
-    t.boolean "next_day", default: false, null: false
     t.string "superior_confirmation"
     t.boolean "overwork_change", default: false, null: false
     t.string "worktime_check_superior"
     t.boolean "tomorrow", default: false, null: false
     t.boolean "worktime_change", default: false, null: false
     t.integer "worktime_approval", default: 0, null: false
-    t.integer "overwork_status", default: 0, null: false
     t.datetime "before_started_at"
     t.datetime "before_finished_at"
     t.date "approval_day"
@@ -50,9 +48,11 @@ ActiveRecord::Schema.define(version: 20220105063550) do
     t.datetime "approval_overtime"
     t.string "approval_contents"
     t.boolean "approval_tomorrow", default: false, null: false
-    t.boolean "approval_next", default: false, null: false
     t.string "before_superior"
     t.string "before_status"
+    t.boolean "next_day", default: false
+    t.boolean "approval_next", default: false
+    t.integer "overwork_status", default: 0
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -74,10 +74,10 @@ ActiveRecord::Schema.define(version: 20220105063550) do
     t.boolean "admin", default: false
     t.boolean "superior", default: false
     t.string "affiliation"
-    t.datetime "basic_work_time", default: "2022-01-02 23:00:00"
-    t.datetime "work_time", default: "2022-01-02 22:30:00"
-    t.datetime "designated_work_start_time", default: "2022-01-03 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-01-03 09:00:00"
+    t.datetime "basic_work_time", default: "2022-01-05 23:00:00"
+    t.datetime "work_time", default: "2022-01-05 22:30:00"
+    t.datetime "designated_work_start_time", default: "2022-01-06 00:00:00"
+    t.datetime "designated_work_end_time", default: "2022-01-06 09:00:00"
     t.integer "employee_number"
     t.string "uid"
     t.index ["email"], name: "index_users_on_email", unique: true

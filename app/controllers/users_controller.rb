@@ -58,18 +58,6 @@ class UsersController < ApplicationController
     @approval_sum4 = Attendance.where(worktime_check_superior: "上長B", worktime_approval: "申請中").count 
     @approval_sum5 = Attendance.where(superior_confirmation: "上長A", overwork_status: "申請中").count
     @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
-    #申請結果
-    @result_sum1 = Attendance.where(user_id: @user.id, month_status: "3").count
-    @result_sum2 = Attendance.where(user_id: @user.id, month_status: "4").count
-    @result_sum7 = Attendance.where(user_id: @user.id, month_status: "申請中").count
-    
-    @result_sum3 = Attendance.where(user_id: @user.id, worktime_approval: "承認").count
-    @result_sum4 = Attendance.where(user_id: @user.id, worktime_approval: "否認").count
-    @result_sum8 = Attendance.where(user_id: @user.id, worktime_approval: "申請中").where.not(worktime_check_superior: nil).count
-    
-    @result_sum5 = Attendance.where(user_id: @user.id, overwork_status: "承認").count
-    @result_sum6 = Attendance.where(user_id: @user.id, overwork_status: "否認").count
-    @result_sum9 = Attendance.where(user_id: @user.id, overwork_status: "申請中").where.not(superior_confirmation: nil).count
   end
 
   def index

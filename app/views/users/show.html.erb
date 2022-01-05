@@ -340,17 +340,21 @@
            <% if day.worktime_approval == "申請中" %> 
              <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}へ申請中" %></div>
            <% elsif day.worktime_approval == "承認" %>
-             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}から承認済" %></div>
+             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}承認" %></div>
            <% elsif day.worktime_approval == "否認" %> 
-             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}から否認されました" %></div>
+             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}否認" %></div>
            <% end %>
            
-           <% if day.overwork_status == "申請中" %> 
-             <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}へ申請中" %></div>
-           <% elsif day.overwork_status == "承認" %>
-             <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}から承認済" %></div>
-           <% elsif day.overwork_status == "否認" %> 
-             <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}から否認されました" %></div>
+           <% if day.plans_endtime.present? %>
+             <% if day.overwork_status == "申請中" %> 
+               <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}へ申請中" %></div>
+             <% elsif day.overwork_status == "承認" %>
+               <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}：承認" %></div>
+             <% elsif day.overwork_status == "否認" %> 
+               <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}：否認" %></div>
+             <% elsif day.overwork_status == "なし" %>
+               <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}：#{day.before_status}" %></div>
+             <% end %>
            <% end %>
          </div>
       </td>

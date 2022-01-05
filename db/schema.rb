@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20211231134449) do
+ActiveRecord::Schema.define(version: 20220105063550) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(version: 20211231134449) do
     t.string "approval_contents"
     t.boolean "approval_tomorrow", default: false, null: false
     t.boolean "approval_next", default: false, null: false
+    t.string "before_superior"
+    t.string "before_status"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

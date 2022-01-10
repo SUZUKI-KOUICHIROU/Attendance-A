@@ -23,21 +23,31 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  #def correct_user
+    #redirect_to(root_url) unless current_user?(@user)
+  #end
+  
   def correct_user
-    redirect_to(root_url) unless current_user?(@user)
+    @user = User.find(params[:user_id]) if @user.blank?
+    unless current_user?(@user)
+      flash[:danger] = "編集権限がありません。"
+      redirect_to(root_url)
+    end
   end
   
   def admin_user
-    redirect_to root_url unless current_user.admin?
+    unless current_user.admin?
+    flash[:danger] = "管理者以外は閲覧できません。" 
+    end
   end
-  
+
   def not_admin_user
     unless !current_user.admin
-    #flash[:danger] = "管理者は勤怠画面を閲覧できません。"    
-    redirect_to root_url
-    end
+      flash[:danger] = "管理者は勤怠画面を閲覧できません。"    
+      redirect_to root_url
+    end     
   end   
-
+  
   def correct_superior_user
     redirect_to(root_url) unless current_user?(@user) || current_user.superior?
   end    

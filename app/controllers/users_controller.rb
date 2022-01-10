@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   require 'csv'
 
   before_action :set_user, only: %i(show edit update update_userinformation destroy edit_basic_info update_basic_infos)
-  before_action :logged_in_user, only: %i(index show edit update destroy edit_basic_info update_basic_info)
+  before_action :logged_in_user, only: %i(show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
   before_action :admin_user, only: %i(index update_userinformation destroy working_employee edit_basic_info update_basic_info)
   before_action :not_admin_user, only: %i(show)
@@ -113,11 +113,11 @@ class UsersController < ApplicationController
    private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :password_confirmation, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 
     def userinformation_params
-      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :password_confirmation, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 
     def basic_info_params
@@ -127,7 +127,7 @@ class UsersController < ApplicationController
     #CSV出力
     def send_users_csv(users)
       #filename = Date.current.strftime("【%Y年%m月】") + @user.name
-      filename = @first_day.strftime("【%Y年%m月】") + @user.name
+      filename = @first_day.strftime("【勤怠表】") + @user.name
       csv_data = CSV.generate do |csv|
         column_names = %w(日付 出社 退社)
         csv << column_names

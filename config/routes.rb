@@ -4,6 +4,8 @@ Rails.application.routes.draw do
     collection { post :import }
   end
 
+  #root  'users#index'
+  
   get 'bases/index'
 
   root 'static_pages#top'

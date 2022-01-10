@@ -54,13 +54,13 @@
           <td>
               <% if day.worktime_approval == "申請中" && day.worktime_check_superior == "上長A" %>
                 <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                      { selected: "上長A" }, { class: "form-control" } %>
-              <% elsif day.worktime_approval == "申請中" && day.worktime_check_superior == "上長B"  %>
+                                      { include_blank: "申請先選択", selected: "上長A" }, { class: "form-control" } %>
+              <% elsif day.worktime_approval == "申請中" && day.worktime_check_superior == "上長B" %>                                                     
                 <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                      { selected: "上長B" }, { class: "form-control" } %>
+                                      { include_blank: "申請先選択", selected: "上長B" }, { class: "form-control" } %>
               <% else %>
                 <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 
-                                      { include_blank: "申請先選択", selected: 1 }, { class: "form-control" } %>
+                                      { include_blank: "申請先選択", selected: "申請先選択" }, { class: "form-control" } %>  
               <% end %>
           </td>  
       </tr>

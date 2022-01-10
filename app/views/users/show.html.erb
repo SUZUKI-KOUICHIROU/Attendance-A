@@ -26,7 +26,7 @@
     <tr>
       <td>所属 : <%= @user.affiliation.present? ? @user.affiliation : "未所属" %></td>
       <td>氏名 : <%= @user.name %></td>
-      <td>社員番号</td>
+      <td>コード</td>
       <td><%= @user.employee_number %></td>
       <td>出勤日数 : <%= @worked_sum %>日</td>
       <td>締め : <%= l(@last_day, format: :short) %></td>
@@ -189,9 +189,11 @@
       </td> 
       
       <td>
-          <% if current_user?(@user) == day.started_at.nil? %> 
-            <% if btn_text = attendance_state(day) %>
-              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+          <% if current_user?(@user) %>
+            <% if current_user?(@user) == day.started_at.nil? %> 
+              <% if btn_text = attendance_state(day) %>
+                <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+              <% end %>
             <% end %>
           <% end %>
       </td>
@@ -216,9 +218,11 @@
       </td>
       
       <td>
-          <% if current_user?(@user) == day.started_at.present? && day.finished_at.nil? %> 
-            <% if btn_text = attendance_state(day) %>
-              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+          <% if current_user?(@user) %>
+            <% if current_user?(@user) == day.started_at.present? && day.finished_at.nil? %> 
+              <% if btn_text = attendance_state(day) %>
+                <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+              <% end %>
             <% end %>
           <% end %>
       </td>
@@ -278,14 +282,18 @@
     
       <td>
          <div class="approval">
+         <% if day.worktime_check_superior? %>  
            <% if day.worktime_approval == "申請中" %> 
              <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}へ申請中" %></div>
            <% elsif day.worktime_approval == "承認" %>
-             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}承認" %></div>
+             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}：承認済" %></div>
            <% elsif day.worktime_approval == "否認" %> 
-             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}否認" %></div>
+             <div class="worktime"><%= "【勤怠変更】#{day.worktime_check_superior}：否認" %></div>
+           <% elsif day.worktime_approval == "なし" %>
+               <div class="overwork"><%= "【残業申請】#{day.worktime_check_superior}：#{day.worktime_before_approval}" %></div>
            <% end %>
-           
+         <% end %> 
+
            <% if day.plans_endtime.present? %>
              <% if day.overwork_status == "申請中" %> 
                <div class="overwork"><%= "【残業申請】#{day.superior_confirmation}へ申請中" %></div>

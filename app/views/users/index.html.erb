@@ -15,8 +15,11 @@
   <table class="table table-condensed table-hover" id="table-users">
     <% @users.each do |user| %>
       <tr>
-        <td><%= user.name %></br>
+          
+          <td><%= user.name unless user.admin? %></br>
+          
           <% if current_user.admin? && !current_user?(user) %>
+            |
             <%= link_to "削除", user, method: :delete, class: "btn btn-md btn-primary",
                 data: { confirm:"削除してよろしいですか？" } %></br>
             <div class="panel-group">

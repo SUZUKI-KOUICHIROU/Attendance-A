@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220105230316) do
+ActiveRecord::Schema.define(version: 20220106231812) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 20220105230316) do
     t.string "worktime_check_superior"
     t.boolean "tomorrow", default: false, null: false
     t.boolean "worktime_change", default: false, null: false
-    t.integer "worktime_approval", default: 0, null: false
     t.datetime "before_started_at"
     t.datetime "before_finished_at"
     t.date "approval_day"
@@ -53,6 +52,11 @@ ActiveRecord::Schema.define(version: 20220105230316) do
     t.boolean "next_day", default: false
     t.boolean "approval_next", default: false
     t.integer "overwork_status", default: 0
+    t.integer "worktime_approval", default: 0
+    t.datetime "approval_started"
+    t.datetime "approval_finished"
+    t.string "worktime_before_superior"
+    t.string "worktime_before_approval"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

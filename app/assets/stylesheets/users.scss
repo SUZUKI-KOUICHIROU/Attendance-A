@@ -97,6 +97,49 @@
   margin-top: 10px;
 }
 
+.form-group {
+  
+  .form-label {
+  position: relative;
+	left: 20px;   
+  }  
+  input[type="label"] {
+        position: relative;
+			  left: 19px;
+  }  
+  input[type="text"] {
+        width: 870px;
+        height: 38px;
+        position: relative;
+			  left: 19px;
+  } 
+  input[type="email"] {
+        width: 870px;
+        height: 38px;
+        position: relative;
+			  left: 19px;
+  } 
+  input[type="password"] {
+        width: 870px;
+        height: 38px;
+        position: relative;
+			  left: 19px;
+  }   
+  input[type="time"] {
+        width: 870px;
+        height: 38px;
+        position: relative;
+			  left: 19px;  
+  }     
+  input[type="submit"] {
+        width: 870px;
+        height: 38px;
+        position: relative;
+			  top: 10px;
+			  left: 19px;
+  } 
+}
+
 /* 申請お知らせ */
 
 .approval {
@@ -198,7 +241,7 @@
 }
 
 .search-btn {
-  width: 70px;
+  width: 80px;
   padding: 8px;
   vertical-align: center;
 }

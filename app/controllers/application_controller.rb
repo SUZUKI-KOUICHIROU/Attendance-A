@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
   def admin_user
     unless current_user.admin?
     flash[:danger] = "管理者以外は閲覧できません。" 
+    redirect_to root_url
     end
   end
 

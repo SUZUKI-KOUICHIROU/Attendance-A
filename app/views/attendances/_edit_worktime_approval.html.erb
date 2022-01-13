@@ -59,10 +59,10 @@
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
                
-               <td><%= day.approval_started&.strftime("%H") %></td>  
-               <td><%= day.approval_started&.strftime("%M") %></td>
-               <td><%= day.approval_finished&.strftime("%H") %></td>  
-               <td><%= day.approval_finished&.strftime("%M") %></td>
+               <td><%= day.before_started_at&.strftime("%H") %></td>  
+               <td><%= day.before_started_at&.strftime("%M") %></td>
+               <td><%= day.before_finished_at&.strftime("%H") %></td>  
+               <td><%= day.before_finished_at&.strftime("%M") %></td>
                
                <td><%= day.started_at&.strftime("%H") %></td>
                <td><%= day.started_at&.strftime("%M") %></td>

@@ -36,16 +36,13 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do  
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
-          if params[:user][:attendances][id][:started_at].present? && params[:user][:attendances][id][:worktime_check_superior].present? 
-            attendance.update_attributes!(item.merge(worktime_approval: "申請中", approval_day: @first_day, before_started_at: attendance.started_at, 
-                                                   before_finished_at: attendance.finished_at, before_note: attendance.note))  
-          elsif params[:user][:attendances][id][:worktime_check_superior].present?
-            attendance.update_attributes!(item)
-          end   
-        
-      end      
+        if item[:worktime_check_superior].present? 
+          item[:worktime_approval] = "申請中" 
+          attendance.update_attributes!(item)
+        end   
+      end     
     end         
-    flash[:success] = "勤怠変更を申請しました（申請中を除く）。"
+    flash[:success] = "勤怠変更を申請しました。"
     redirect_to user_url(date: params[:date])       
   rescue ActiveRecord::RecordInvalid        
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"

@@ -47,7 +47,7 @@
               <% if day.started_at.present? && day.finished_at.present? %>
                 <%= worktime_tomorrow(format_basic_info(day.finished_at), format_basic_info(day.started_at), day.tomorrow) %>
               <% elsif day.before_started_at.present? && day.before_finished_at.present? %>
-                <%= worktime_change_tomorrow(format_basic_info(day.before_finished_at), format_basic_info(day.before_started_at), day.tomorrow) %>
+                <%= worktime_before_tomorrow(format_basic_info(day.before_finished_at), format_basic_info(day.before_started_at), day.tomorrow) %>
               <% end %>
           </td>
           <td><%= attendance.text_field :note, class: "form-control" %></td>

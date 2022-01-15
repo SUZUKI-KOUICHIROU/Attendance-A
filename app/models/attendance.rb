@@ -2,6 +2,7 @@ class Attendance < ApplicationRecord
 
   belongs_to :user
   
+  
   enum worktime_approval: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
   enum overwork_status: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
 
@@ -14,7 +15,7 @@ class Attendance < ApplicationRecord
   validate :finished_at_is_invalid_without_a_started_at
 
   # 退勤時間が存在しない場合、出勤時間は無効
-  validate :started_at_is_invalid_without_a_finished_at
+  validate :started_at_is_invalid_without_a_finished_at, on: :update
   
   # 出勤・退勤時間どちらも存在する時、出勤時間より早い退勤時間は無効
   validate :started_at_than_finished_at_fast_if_invalid

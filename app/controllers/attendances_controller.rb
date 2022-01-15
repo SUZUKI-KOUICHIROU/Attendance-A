@@ -78,12 +78,12 @@ class AttendancesController < ApplicationController
           flash[:success] = "勤怠変更申請処理が完了しました。"
         end
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, note: attendance.before_note, tomorrow: attendance.approval_tomorrow,
+        attendance.attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, note: attendance.before_note, tomorrow: attendance.approval_tomorrow,
                                      worktime_before_superior: attendance.worktime_check_superior, worktime_before_approval: "否認"))  
         flash[:success] = "勤怠変更申請処理が完了しました。"
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし"
         attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow, note: attendance.before_note,
-                                     worktime_check_superior: attendance.worktime_before_superior, worktime_approval: attendance.worktime_before_approval)) 
+                                     worktime_check_superior: attendance.worktime_before_superior, worktime_approval: attendance.worktime_before_approval))
         flash[:success] = "勤怠変更申請処理が完了しました。"
       else
         #flash[:danger] = "変更する場合はチェックを入れてください。"

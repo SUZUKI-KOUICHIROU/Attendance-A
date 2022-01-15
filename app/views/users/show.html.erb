@@ -172,11 +172,9 @@
       <td>
           <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
             <%= day.started_at&.strftime("%H") %>
-          <% elsif day.worktime_approval == "否認" && day.approval_started.present? %> 
-            <%= day.approval_started&.strftime("%H") %>
           <% elsif day.worktime_approval == "否認" && day.before_started_at.present? %>
             <%= day.before_started_at&.strftime("%H") %>
-          <% else%>
+          <% else %>
             <%= day.started_at&.strftime("%H") %>
           <% end %>
       </td>
@@ -184,8 +182,6 @@
       <td>
           <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
             <%= day.started_at&.strftime("%M") %>
-          <% elsif day.worktime_approval == "否認" && day.approval_started.present? %> 
-            <%= day.approval_started&.strftime("%M") %>
           <% elsif day.worktime_approval == "否認" && day.before_started_at.present? %>
             <%= day.before_started_at&.strftime("%M") %>
           <% else %>
@@ -206,8 +202,6 @@
       <td>
           <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
             <%= day.finished_at&.strftime("%H") %>
-          <% elsif day.worktime_approval == "否認" && day.approval_finished.present? %> 
-            <%= day.approval_finished&.strftime("%H") %>
           <% elsif day.worktime_approval == "否認" && day.before_finished_at.present? %>
             <%= day.before_finished_at&.strftime("%H") %>
           <% else %>
@@ -217,8 +211,6 @@
       <td>
           <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
             <%= day.finished_at&.strftime("%M") %>
-          <% elsif day.worktime_approval == "否認" && day.approval_finished.present? %> 
-            <%= day.approval_finished&.strftime("%M") %>
           <% elsif day.worktime_approval == "否認" && day.before_finished_at.present? %>
             <%= day.before_finished_at&.strftime("%M") %>
           <% else %>

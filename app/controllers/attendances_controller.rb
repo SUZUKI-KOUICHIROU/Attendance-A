@@ -15,11 +15,11 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
     if @attendance.started_at.nil?
-      if @attendance.update_columns(started_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(started_at: Time.current.change(sec: 0), before_started_at: Time.current.change(sec: 0))
         flash[:info] = "出勤しました"
       end
     elsif @attendance.finished_at.nil? 
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0), before_finished_at: Time.current.change(sec: 0))
         flash[:info] = "退勤しました"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -37,7 +37,24 @@ class AttendancesController < ApplicationController
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
         if item[:worktime_check_superior].present? 
+          if item[:started_at].blank? && item[:finished_at].present?
+            flash[:danger] = "出勤時間が未入力です。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          elsif item[:started_at].present? && item[:finished_at].blank?
+            flash[:danger] = "退勤時間が未入力です。"  
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          elsif item[:started_at].blank? && item[:finished_at].blank?
+            flash[:danger] = "出退勤時間が未入力です。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          elsif item[:started_at].present? && item[:finished_at].present? && item[:tomorrow] == false && item[:started_at].to_s > item[:finished_at].to_s
+            flash[:danger] = "出勤時間より早い退勤時間は無効です。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          elsif item[:note].blank?
+            flash[:danger] = "変更内容を入力してください。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return   
+          end 
           item[:worktime_approval] = "申請中" 
+          item[:approval_day] = @first_day
           attendance.update_attributes!(item)
         end   
       end     
@@ -73,8 +90,7 @@ class AttendancesController < ApplicationController
           flash[:success] = "勤怠変更申請処理が完了しました。"
         end
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "否認" 
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, note: attendance.before_note, tomorrow: attendance.approval_tomorrow,
-                                     worktime_before_superior: attendance.worktime_check_superior, worktime_before_approval: "否認"))
+        attendance.update_attributes(item.merge(worktime_before_superior: attendance.worktime_check_superior, worktime_before_approval: "否認"))
         flash[:success] = "勤怠変更申請処理が完了しました。"
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし"
         attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow, note: attendance.before_note,

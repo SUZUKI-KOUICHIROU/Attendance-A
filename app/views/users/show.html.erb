@@ -170,22 +170,18 @@
       <td class="<%= css_class %>"><%= %w{日 月 火 水 木 金 土}[day.worked_on.wday] %></td>
       
       <td>
-          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
             <%= day.started_at&.strftime("%H") %>
-          <% elsif day.worktime_approval == "否認" && day.before_started_at.present? %>
-            <%= day.before_started_at&.strftime("%H") %>
           <% else %>
-            <%= day.started_at&.strftime("%H") %>
+            <%= day.before_started_at&.strftime("%H") %>
           <% end %>
       </td>
       
       <td>
-          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
             <%= day.started_at&.strftime("%M") %>
-          <% elsif day.worktime_approval == "否認" && day.before_started_at.present? %>
-            <%= day.before_started_at&.strftime("%M") %>
           <% else %>
-            <%= day.started_at&.strftime("%M") %>
+            <%= day.before_started_at&.strftime("%M") %>
           <% end %>
       </td> 
       
@@ -200,21 +196,17 @@
       </td>
       
       <td>
-          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
             <%= day.finished_at&.strftime("%H") %>
-          <% elsif day.worktime_approval == "否認" && day.before_finished_at.present? %>
-            <%= day.before_finished_at&.strftime("%H") %>
           <% else %>
-            <%= day.finished_at&.strftime("%H") %>
+            <%= day.before_finished_at&.strftime("%H") %>
           <% end %>
       </td>
       <td>
-          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
             <%= day.finished_at&.strftime("%M") %>
-          <% elsif day.worktime_approval == "否認" && day.before_finished_at.present? %>
-            <%= day.before_finished_at&.strftime("%M") %>
           <% else %>
-            <%= day.finished_at&.strftime("%M") %>
+            <%= day.before_finished_at&.strftime("%M") %>
           <% end %>  
       </td>
       
@@ -230,22 +222,19 @@
       
       <td>
           <% if day.started_at.present? && day.finished_at.present? %>      
-            <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+            <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
               <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.tomorrow) %>
               <!--% @total_working_times = @total_working_times.to_f + str_times.to_f %-->
-            <% elsif day.worktime_approval == "否認" && day.before_started_at.present? %>
-              <%= str_times = before_working_times(day.before_started_at.floor_to(15.minutes), day.before_finished_at.floor_to(15.minutes), day.tomorrow) %>   
-            <% elsif day.worktime_approval == "否認" && day.before_started_at.blank? %>
-              <%= %> 
             <% else %>  
-              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.tomorrow) %>    
+              
+              <%= str_times = before_working_times(day.before_started_at.floor_to(15.minutes), day.before_finished_at.floor_to(15.minutes), day.tomorrow) %>   
             <% end %>
           <% end %>
       </td>
       <td>
-          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
+          <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
             <%= day.note %>
-          <% elsif day.worktime_approval == "否認"  %>
+          <% else %>
             <%= day.before_note %>
           <% end %>
       </td>

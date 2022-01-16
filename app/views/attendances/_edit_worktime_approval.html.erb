@@ -59,23 +59,11 @@
                <td><%= l(day.worked_on, format: :short) %></td> 
                <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td> 
                
-               
-               <% if day.before_started_at == day.started_at %>
-                 <td></td>
-                 <td></td>
-               <% else %>
-                 <td><%= day.before_started_at&.strftime("%H") %></td>  
-                 <td><%= day.before_started_at&.strftime("%M") %></td>
-               <% end %>
-               
-               <% if day.before_finished_at == day.finished_at %>
-                 <td></td>
-                 <td></td>
-               <% else %>   
-                 <td><%= day.before_finished_at&.strftime("%H") %></td>  
-                 <td><%= day.before_finished_at&.strftime("%M") %></td>
-               <% end %>
-               
+               <td><%= day.before_started_at&.strftime("%H") %></td>  
+               <td><%= day.before_started_at&.strftime("%M") %></td>
+               <td><%= day.before_finished_at&.strftime("%H") %></td>  
+               <td><%= day.before_finished_at&.strftime("%M") %></td>
+              
                <td><%= day.started_at&.strftime("%H") %></td>
                <td><%= day.started_at&.strftime("%M") %></td>
                <td><%= day.finished_at&.strftime("%H") %></td>

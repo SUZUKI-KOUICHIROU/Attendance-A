@@ -50,7 +50,7 @@
                 <%= worktime_before_tomorrow(format_basic_info(day.before_finished_at), format_basic_info(day.before_started_at), day.tomorrow) %>
               <% end %>
           </td>
-          <td><%= attendance.text_field :note, class: "form-control" %></td>
+          <td><%= attendance.text_field :note, :placeholder => "変更内容を入力してください", class: "form-control" %></td>
           <td>
               <% if day.worktime_approval == "申請中" && day.worktime_check_superior == "上長A" %>
                 <%= attendance.select :worktime_check_superior, @superiors.pluck(:name), 

@@ -37,28 +37,12 @@ class AttendancesController < ApplicationController
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
         if item[:worktime_check_superior].present? 
-          if item[:started_at].blank? && item[:finished_at].present?
-            flash[:danger] = "出勤時間が未入力です。"
-            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
-          elsif item[:started_at].present? && item[:finished_at].blank?
-            flash[:danger] = "退勤時間が未入力です。"  
-            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
-          elsif item[:started_at].blank? && item[:finished_at].blank?
-            flash[:danger] = "出退勤時間が未入力です。"
-            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
-          elsif item[:started_at].present? && item[:finished_at].present? && item[:tomorrow] == false && item[:started_at].to_s > item[:finished_at].to_s
-            flash[:danger] = "出勤時間より早い退勤時間は無効です。"
-            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
-          elsif item[:note].blank?
-            flash[:danger] = "変更内容を入力してください。"
-            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return   
-          end 
           item[:worktime_approval] = "申請中" 
           item[:approval_day] = @first_day
           attendance.update_attributes!(item)
         end   
-      end     
-    end         
+      end         
+    end
     flash[:success] = "勤怠変更を申請しました。"
     redirect_to user_url(date: params[:date])       
   rescue ActiveRecord::RecordInvalid        

@@ -41,7 +41,7 @@
                 <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %>
                 <td><%= attendance.time_select :plans_endtime, class: "form-control" %></td>
                 <td><%= attendance.check_box :next_day, {}, "true", "false" %></td>
-                <td><%= attendance.text_field :business_contents, class: "form-control" %></td>
+                <td><%= attendance.text_field :business_contents, :placeholder => "業務処理内容を入力してください", class: "form-control" %></td>
                 <td>
                     <% if day.overwork_status == "申請中" && day.superior_confirmation == "上長A" %>
                       <%= attendance.select :superior_confirmation, @superiors.pluck(:name), 

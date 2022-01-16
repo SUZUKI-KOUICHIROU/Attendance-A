@@ -150,7 +150,6 @@ class AttendancesController < ApplicationController
     overwork_approval_params.each do |id, item|
       attendance = Attendance.find(id)
         if params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "申請中"    
-          flash[:danger] = "指示者確認が申請中のままです。"
         elsif params[:user][:attendances][id][:overwork_change] == "1" && params[:user][:attendances][id][:overwork_status] == "承認"
           attendance.update_attributes(item.merge(approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents, approval_next: attendance.next_day, 
                                                   before_superior: attendance.superior_confirmation, before_status: "承認"))

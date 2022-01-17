@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   
   require 'csv'
 
-  before_action :set_user, only: %i(show edit update update_userinformation destroy edit_basic_info update_basic_infos)
+  before_action :set_user, only: %i(show edit update update_userinformation destroy edit_basic_info update_basic_infos update_month_apply)
   before_action :logged_in_user, only: %i(show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
   before_action :admin_user, only: %i(index update_userinformation destroy working_employee edit_basic_info update_basic_info)
@@ -60,6 +60,19 @@ class UsersController < ApplicationController
     @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count
   end
 
+  #1ヶ月申請
+  def update_month_apply
+    @attendance = @user.attendances.find_by(worked_on: params[:user][:apply_month])
+    if params[:user][:month_check_superior].present?
+      @attendance.month_status = "申請中"
+      @attendance.update_attributes(month_params)
+      flash[:success] = "1ヶ月申請が完了しました。"
+    else
+      flash[:danger] = "所属長を選択して下さい。"
+    end
+    redirect_to user_url(date: params[:date]) 
+  end  
+  
   def index
     @users = User.paginate(page: params[:page]).search(params[:search])
   end
@@ -116,6 +129,11 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :password_confirmation, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 
+    #1ヶ月申請
+    def month_params
+      params.require(:user).permit(:month_check_superior)
+    end  
+    
     def userinformation_params
       params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :password_confirmation, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end

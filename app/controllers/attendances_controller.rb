@@ -88,18 +88,6 @@ class AttendancesController < ApplicationController
     redirect_to user_url(date: params[:date])
     return 
   end
-  
-  #1ヶ月申請
-  def update_month_apply
-    @attendance = Attendance.where(user_id: month_params[:user_id], worked_on: params[:date])
-    unless month_params[:month_check_superior].blank?
-      @attendance.update_all(month_params)
-        flash[:success] = "1ヶ月申請が完了しました。"
-    else
-       flash[:danger] = "1ヶ月申請に失敗しました。" 
-    end
-     redirect_to user_url(date: params[:date]) 
-  end 
     
   #1ヶ月申請承認一覧ページ
   def edit_month_approval
@@ -110,15 +98,20 @@ class AttendancesController < ApplicationController
   def update_month_approval
     superior_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if params[:user][:attendances][id][:status_change] == "1" && params[:user][:attendances][id][:month_status] == "2"
-      elsif params[:user][:attendances][id][:status_change] == "1"
+      if item[:status_change] == "1" && item[:month_status] == "申請中"
+      elsif item[:status_change] == "1" && item[:month_status] == "承認" 
         attendance.update_attributes(item)
         flash[:success] = "1か月申請処理が完了しました。"    
+      elsif item[:status_change] == "1" && item[:month_status] == "否認" 
+        attendance.update_attributes(item)
+        flash[:success] = "1か月申請処理が完了しました。"
+      elsif item[:status_change] == "1" && item[:month_status] == "なし" 
+        attendance.update_attributes(item)
+        flash[:success] = "1か月申請処理が完了しました。"
       else
       end
-      redirect_to user_url(date: params[:date])
-      return
     end
+    redirect_to user_url(date: params[:date])
   end
 
   #残業申請ページ
@@ -181,11 +174,6 @@ class AttendancesController < ApplicationController
     def worktime_approval_params 
       params.require(:user).permit(attendances: [:started_at, :finished_at, :worktime_approval, :worktime_change, :worktime_check_superior, :first_approval, :tomorrow])[:attendances]
     end
-    
-    #1ヶ月申請
-    def month_params
-      params.require(:user).permit(:month_check_superior, :month_status).merge(user_id: params[:id], month_status: '申請中', apply_month: params[:date].to_date).to_h
-    end  
 
     #1ヶ月承認
     def superior_approval_params

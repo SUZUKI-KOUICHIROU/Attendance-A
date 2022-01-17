@@ -5,7 +5,8 @@ class Attendance < ApplicationRecord
   
   enum worktime_approval: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
   enum overwork_status: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }, _prefix: true
-
+  
+  
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }
   validates :business_contents, length: { maximum: 50 }

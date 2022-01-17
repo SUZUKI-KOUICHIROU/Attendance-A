@@ -309,19 +309,19 @@
        <td colspan="5"></td>
        <td>
        
-         <% if @approval.month_status == "3" %>
-           <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}から承認済" %></font>
-         <% elsif @approval.month_status == "4" %> 
-           <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}から否認" %></font>
+         <% if @approval.month_status == "承認" %>
+           <font class="approval-4">所属長承認 &ensp; <%= "#{@approval.month_check_superior}：承認済" %></font>
+         <% elsif @approval.month_status == "否認" %> 
+           <font class="approval-4">所属長承認 &ensp; <%= "#{@approval.month_check_superior}：否認" %></font>
          <% elsif @approval.month_status == "申請中" %>
-           <font class="approval-4">所属長承認：<%= "#{@approval.month_check_superior}へ申請中" %></font>  
+           <font class="approval-4">所属長承認 &ensp; <%= "#{@approval.month_check_superior}へ申請中" %></font>  
          <% else %>
            <font>所属長承認：未</font>  
          <% end %>
-       
+        
          <% if current_user == @user %> 
-           <%= form_with(model: @user, url: attendances_update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
-             <%= f.hidden_field :month_status, :value => "申請中" %>
+           <%= form_with(model: @user, url: update_month_apply_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+             <%= f.hidden_field :apply_month, :value => @first_day %>  
              <%= f.select :month_check_superior, @superiors.pluck(:name), { include_blank: "申請先を選択", selected: 1 },
                                                  { class: "form-control", required: true } %>
                <%= f.submit "申請", class: "btn btn-md btn-primary btn-block btn-monthapproval" %>

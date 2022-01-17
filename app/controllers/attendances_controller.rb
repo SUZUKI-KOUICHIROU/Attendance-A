@@ -5,7 +5,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: %i(edit_one_month update_one_month update_month_apply edit_month_approval update_month_approval edit_overwork_request update_overwork_request
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
-  before_action :correct_user, only: %i(edit_one_month edit_worktime_approval edit_overwork_approval edit_month_approval)
+  before_action :correct_user, only: %i(edit_one_month edit_worktime_approval edit_overwork_request edit_overwork_approval edit_month_approval)
   before_action :correct_superior_user, only: %i(edit_worktime_approval update_worktime_approval edit_month_approval update_month_approval edit_overwork_approval update_overwork_request)
   before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
@@ -94,9 +94,9 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.where(user_id: month_params[:user_id], worked_on: params[:date])
     unless month_params[:month_check_superior].blank?
       @attendance.update_all(month_params)
-        flash[:success] = "申請しました。"
+        flash[:success] = "1ヶ月申請が完了しました。"
     else
-       flash[:danger] = "申請に失敗しました。" 
+       flash[:danger] = "1ヶ月申請に失敗しました。" 
     end
      redirect_to user_url(date: params[:date]) 
   end 
@@ -130,8 +130,10 @@ class AttendancesController < ApplicationController
   def update_overwork_request
     overwork_request_params.each do |id, item| 
       attendance = Attendance.find(id)
-      if attendance.update_attributes(item.merge(overwork_status: "申請中", approval_overtime: attendance.plans_endtime, approval_contents: attendance.business_contents))
-        flash[:success] = "残業申請しました。"
+      if item[:superior_confirmation].present?
+        item[:overwork_status] = "申請中"
+        attendance.update_attributes(item)
+        flash[:success] = "残業申請が完了しました。"
       else
         flash[:danger] = "残業申請に失敗しました。"
       end

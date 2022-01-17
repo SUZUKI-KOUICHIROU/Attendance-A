@@ -12,7 +12,7 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
   validates :employee_number, presence: true, length: { maximum: 10 }, uniqueness: true 
-  validates :affiliation, length: { in: 2..50 }, allow_blank: true
+  validates :affiliation, length: { in: 2..10 }, allow_blank: true
   validates :uid, length: { maximum: 10 }, allow_blank: true, uniqueness: true 
   validates :basic_work_time, presence: true
   validates :work_time, presence: true

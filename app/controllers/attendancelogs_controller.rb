@@ -1,6 +1,9 @@
 class AttendancelogsController < ApplicationController
 
   before_action :set_user, only: %i(edit)
+  before_action :logged_in_user, only: %i(edit create)
+  before_action :correct_user, only: %i(edit create)
+  
   
   def edit
     @attendance_day = Attendance.where(attendances: {worktime_approval: "承認", user_id: @user.id}).order(:worked_on)

@@ -6,6 +6,7 @@ class AttendancesController < ApplicationController
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :correct_user, only: %i(edit_one_month)
+  before_action :correct_superior_user, only: %i(update_worktime_approval)
   before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
   
@@ -77,8 +78,8 @@ class AttendancesController < ApplicationController
         attendance.update_attributes(item.merge(worktime_before_superior: attendance.worktime_check_superior, worktime_before_approval: "否認"))
         flash[:success] = "勤怠変更申請処理が完了しました。"
       elsif params[:user][:attendances][id][:worktime_change] == "1" && params[:user][:attendances][id][:worktime_approval] == "なし"
-        attendance.update_attributes(item.merge(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow, note: attendance.before_note,
-                                     worktime_check_superior: attendance.worktime_before_superior, worktime_approval: attendance.worktime_before_approval))
+        attendance.update_columns(started_at: attendance.before_started_at, finished_at: attendance.before_finished_at, tomorrow: attendance.approval_tomorrow, note: attendance.before_note,
+                                  worktime_check_superior: attendance.worktime_before_superior, worktime_approval: attendance.worktime_before_approval)
         flash[:success] = "勤怠変更申請処理が完了しました。"
       else
         #flash[:danger] = "変更する場合はチェックを入れてください。"
@@ -110,7 +111,6 @@ class AttendancesController < ApplicationController
     superior_approval_params.each do |id, item|
       attendance = Attendance.find(id)
       if params[:user][:attendances][id][:status_change] == "1" && params[:user][:attendances][id][:month_status] == "2"
-        flash[:danger] = "指示者確認が申請中のままです。"
       elsif params[:user][:attendances][id][:status_change] == "1"
         attendance.update_attributes(item)
         flash[:success] = "1か月申請処理が完了しました。"    

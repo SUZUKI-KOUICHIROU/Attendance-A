@@ -50,7 +50,11 @@ class ApplicationController < ActionController::Base
   end   
   
   def correct_superior_user
-    redirect_to(root_url) unless current_user?(@user) || current_user.superior?
+    @user = User.find(params[:user_id]) if @user.blank?
+    unless current_user?(@user) || current_user.superior?
+      flash[:danger] = "閲覧・編集権限がありません。"
+      redirect_to(root_url)
+    end
   end    
 
   def superior_choice

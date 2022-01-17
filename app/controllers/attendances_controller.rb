@@ -91,7 +91,7 @@ class AttendancesController < ApplicationController
     
   #1ヶ月申請承認一覧ページ
   def edit_month_approval
-    @attendances = Attendance.where(month_status: "申請中", month_check_superior: @user.name).order(:user_id).order(:apply_month).group_by(&:user_id)
+    @attendances = Attendance.where(month_status: "申請中", month_check_superior: @user.name).order(:user_id).order(:worked_on).group_by(&:user_id)
   end
   
   #1ヶ月承認

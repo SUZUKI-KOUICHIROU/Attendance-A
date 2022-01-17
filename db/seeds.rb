@@ -10,21 +10,27 @@
 
 User.create!(name: "管理者",
              email: "admin@email.com",
-             employee_number: 1,
+             affiliation: "総務部",
+             employee_number: 0,
+             uid: "0",
              password: "password",
              password_confirmation: "password",
              admin: true)
 
 User.create!(name: "上長A",
              email: "superior-1@email.com",
-             employee_number: 2,
+             affiliation: "経営企画部",
+             employee_number: 1,
+             uid: "A001",
              password: "password",
              password_confirmation: "password",
              superior: true)
 
 User.create!(name: "上長B",
              email: "superior-2@email.com",
-             employee_number: 3,
+             affiliation: "マーケティング部",
+             employee_number: 2,
+             uid: "B002",
              password: "password",
              password_confirmation: "password",
              superior: true)

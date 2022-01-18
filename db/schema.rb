@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220115140441) do
+ActiveRecord::Schema.define(version: 20220118145411) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -81,12 +81,11 @@ ActiveRecord::Schema.define(version: 20220115140441) do
     t.string "affiliation"
     t.datetime "basic_work_time", default: "2022-01-17 23:00:00"
     t.datetime "work_time", default: "2022-01-17 22:30:00"
-    t.datetime "designated_work_start_time", default: "2022-01-18 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-01-18 09:00:00"
-    t.integer "employee_number"
     t.string "uid"
+    t.datetime "designated_work_start_time"
+    t.datetime "designated_work_end_time"
+    t.string "employee_number"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["employee_number"], name: "index_users_on_employee_number", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 

@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   def correct_superior_user
     @user = User.find(params[:user_id]) if @user.blank?
     unless current_user?(@user) || current_user.superior?
-      flash[:danger] = "申請先上長以外の閲覧・編集はできません。"
+      flash[:danger] = "閲覧・編集権限がありません。"
       redirect_to(root_url)
     end
   end    

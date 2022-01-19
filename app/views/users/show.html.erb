@@ -222,11 +222,12 @@
       
       <td>
           <% if day.started_at.present? && day.finished_at.present? %>      
-            <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" || day.worktime_approval == "否認" %>
+            <% if day.worktime_approval == "申請中" || day.worktime_approval == "承認" %>
               <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.tomorrow) %>
-              <!--% @total_working_times = @total_working_times.to_f + str_times.to_f %-->
+              <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+            <% elsif day.worktime_approval == "否認" %>
+              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.tomorrow) %>     
             <% else %>  
-              
               <%= str_times = before_working_times(day.before_started_at.floor_to(15.minutes), day.before_finished_at.floor_to(15.minutes), day.tomorrow) %>   
             <% end %>
           <% end %>
@@ -305,7 +306,7 @@
        <td></td>
        <td colspan="2"></td>
        <td colspan="6"></td>
-       <td></td>
+       <td><%= format("%.2f", @total_working_times.to_f) %></td>
        <td colspan="5"></td>
        <td>
        

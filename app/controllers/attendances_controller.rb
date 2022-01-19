@@ -6,6 +6,7 @@ class AttendancesController < ApplicationController
                                     edit_overwork_approval update_overwork_approval edit_worktime_approval update_worktime_approval attendance_log update_attendance_log) 
   before_action :logged_in_user, only: %i(update edit_one_month)
   before_action :correct_user, only: %i(edit_one_month edit_worktime_approval edit_overwork_request edit_overwork_approval edit_month_approval)
+  before_action :not_admin_user, only: %i(edit_one_month)
   before_action :correct_superior_user, only: %i(edit_worktime_approval update_worktime_approval edit_month_approval update_month_approval edit_overwork_approval update_overwork_request)
   before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)

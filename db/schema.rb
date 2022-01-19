@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220118145411) do
+ActiveRecord::Schema.define(version: 20220119102654) do
 
   create_table "attendancelogs", force: :cascade do |t|
     t.date "month_form"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 20220118145411) do
     t.string "worktime_before_superior"
     t.string "worktime_before_approval"
     t.integer "attendance_check", default: 0
+    t.date "overwork_day"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -79,8 +80,8 @@ ActiveRecord::Schema.define(version: 20220118145411) do
     t.boolean "admin", default: false
     t.boolean "superior", default: false
     t.string "affiliation"
-    t.datetime "basic_work_time", default: "2022-01-17 23:00:00"
-    t.datetime "work_time", default: "2022-01-17 22:30:00"
+    t.datetime "basic_work_time", default: "2022-01-19 23:00:00"
+    t.datetime "work_time", default: "2022-01-19 22:30:00"
     t.string "uid"
     t.datetime "designated_work_start_time"
     t.datetime "designated_work_end_time"

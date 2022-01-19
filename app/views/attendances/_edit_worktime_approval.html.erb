@@ -72,7 +72,7 @@
                <td><%= day.note %></td>
                <td><%= worktime.select :worktime_approval, Attendance.worktime_approvals.keys, {prompt: true}, { class: "form-control input-md", required: true } %></td>
                <td><%= worktime.check_box :worktime_change, checked: day.new_record? %></td>
-               <td><%= link_to "確認", user_path(user, date: day.approval_day), class: "btn btn-sm btn-primary" %></td>
+               <td><%= link_to "確認", confirmation_show_user_path(user, date: day.approval_day), class: "btn btn-sm btn-primary" %></td>
              </tr>
            </tbody>
          <% end %>

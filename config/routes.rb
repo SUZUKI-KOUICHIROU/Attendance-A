@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       patch 'update_userinformation'
       get 'edit_basic_info'
       patch 'update_basic_info'
+      get 'confirmation_show'
       #勤怠変更
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'

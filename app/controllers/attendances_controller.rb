@@ -8,7 +8,7 @@ class AttendancesController < ApplicationController
   before_action :correct_user, only: %i(edit_one_month edit_worktime_approval edit_overwork_request edit_overwork_approval edit_month_approval)
   before_action :not_admin_user, only: %i(edit_one_month)
   before_action :correct_superior_user, only: %i(edit_worktime_approval update_worktime_approval edit_month_approval update_month_approval edit_overwork_approval update_overwork_request)
-  before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply)
+  before_action :set_one_month, only: %i(edit_one_month update_one_month update_month_apply edit_overwork_request update_overwork_request)
   before_action :superior_choice, only: %i(edit_overwork_request edit_one_month)
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -140,7 +140,7 @@ class AttendancesController < ApplicationController
     @overwork_user = User.joins(:attendances).group("users.id").where(attendances: {superior_confirmation: @user.name, overwork_status: "申請中"})
     @overwork = Attendance.where(overwork_status: "申請中", superior_confirmation: @user.name).where.not(plans_endtime: nil).order(:worked_on)
   end
-
+  
   #残業申請承認
   def update_overwork_approval
     overwork_approval_params.each do |id, item|
@@ -165,6 +165,7 @@ class AttendancesController < ApplicationController
     redirect_to user_url
   end
 
+  
   private
     #勤怠変更申請
     def attendances_params

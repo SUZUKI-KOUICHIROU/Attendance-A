@@ -135,34 +135,27 @@ class UsersController < ApplicationController
   # 勤怠csv出力
   def send_attendances_csv(csv_attendances)
     csv_data = CSV.generate(headers: true) do |csv|
-      header = ["日付", "出社時間", "退社時間", "在社時間"]
+      header = ["日付", "出社時間", "退社時間", "備考"]
       # 表のカラム名を定義
       csv << header
       # column_valuesに代入するカラム値を定義
       csv_attendances.each do |attendance|
         
         values = [attendance.worked_on,
-          #attendance.before_started_at.present? ? attendance.before_started_at.floor_to(15.minutes).strftime("%H:%M") : nil,
-          #attendance.before_finished_at.present? ? attendance.before_finished_at.floor_to(15.minutes).strftime("%H:%M") : nil,
-          if  attendance.worktime_approval.try(:include?, "承認") || attendance.before_started_at.present? && attendance.before_finished_at.present? && attendance.worktime_approval.blank?
-            attendance.started_at.strftime("%H:%M")
+          attendance.before_started_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_started_at.floor_to(15.minutes).strftime("%H:%M") : nil,
+          attendance.before_finished_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_finished_at.floor_to(15.minutes).strftime("%H:%M") : nil,
+          
+          if attendance.worktime_approval.try(:include?, "承認") 
+            attendance.note
           else
             nil
-          end,
-          if attendance.worktime_approval.try(:include?, "承認") || attendance.before_started_at.present? && attendance.before_finished_at.present? && attendance.worktime_approval.blank?
-            attendance.finished_at.strftime("%H:%M")
-          else
-            nil
-          end,
-            if attendance.started_at.present? && attendance.finished_at.present? 
-              format("%.2f", (((attendance.finished_at.floor_to(15.minutes) - attendance.started_at.floor_to(15.minutes)) / 60) / 60.0))
-            end
+          end
         ]
         # 表の値を定義
         csv << values
       end
     end
-    send_data(csv_data, filename: "【勤怠表】#{User.find(params[:id]).name}.csv")
+    send_data(csv_data, filename: "【勤怠表】#{User.find(params[:id]).name}#{Time.zone.now.strftime("(%Y年%m月)")}.csv")
   end
    
    

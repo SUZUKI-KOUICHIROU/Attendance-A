@@ -6,10 +6,10 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: %i(show edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(show edit)
   before_action :admin_user, only: %i(index update_userinformation destroy working_employee edit_basic_info update_basic_info)
-  before_action :not_admin_user, only: %i(show)
+  before_action :not_admin_user, only: %i(show confirmation_show)
   before_action :correct_superior_user, only: %i(confirmation_show)
   before_action :set_one_month, only: %i(show confirmation_show)
-  before_action :superior_choice, only: %i(show)
+  before_action :superior_choice, only: %i(show confirmation_show)
   
   def new
     @user = User.new

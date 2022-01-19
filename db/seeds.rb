@@ -10,7 +10,6 @@
 
 User.create!(name: "管理者",
              email: "admin@email.com",
-             affiliation: "総務部",
              employee_number: "0",
              uid: "0",
              basic_work_time: Time.current.change(hour: 8, min: 0, sec: 0),

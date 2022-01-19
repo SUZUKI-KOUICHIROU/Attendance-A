@@ -142,8 +142,8 @@ class UsersController < ApplicationController
       csv_attendances.each do |attendance|
         
         values = [attendance.worked_on,
-          attendance.before_started_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_started_at.floor_to(15.minutes).strftime("%H:%M") : nil,
-          attendance.before_finished_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_finished_at.floor_to(15.minutes).strftime("%H:%M") : nil,
+          attendance.before_started_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_started_at.strftime("%H:%M") : nil,
+          attendance.before_finished_at.present? && attendance.worktime_check_superior.blank? || attendance.worktime_approval.try(:include?, "承認") ? attendance.before_finished_at.strftime("%H:%M") : nil,
           
           if attendance.worktime_approval.try(:include?, "承認") 
             attendance.note

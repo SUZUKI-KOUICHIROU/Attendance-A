@@ -33,24 +33,30 @@ class AttendancesController < ApplicationController
   def edit_one_month
   end
 
-   #勤怠変更申請
+  #勤怠変更申請
   def update_one_month
+    @application_count = 0    
     ActiveRecord::Base.transaction do  
       attendances_params.each do |id, item|   
         attendance = Attendance.find(id)
-        if item[:worktime_check_superior].present? 
-          item[:worktime_approval] = "申請中" 
-          item[:approval_day] = @first_day
-          attendance.update_attributes!(item)
-        end   
-      end         
+        if item[:worktime_check_superior].present?
+          @application_count += 1  
+          if item[:worktime_approval] = "申請中" 
+            item[:approval_day] = @first_day
+            attendance.update_attributes!(item)
+          end   
+        end         
+      end
     end
-    flash[:success] = "勤怠変更を申請しました。"
-    redirect_to user_url(date: params[:date])       
+    if @application_count > 0
+      flash[:success] = "勤怠変更を申請しました。"
+      #redirect_to user_url(date: params[:date])       
+    end
+    redirect_to user_url(date: params[:date]) 
   rescue ActiveRecord::RecordInvalid        
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
-  end          
+  end 
         
   #勤怠変更承認ページ
   def edit_worktime_approval
@@ -90,25 +96,25 @@ class AttendancesController < ApplicationController
     return 
   end
     
-  #1ヶ月申請承認一覧ページ
+  #所属長承認申請一覧ページ
   def edit_month_approval
     @attendances = Attendance.where(month_status: "申請中", month_check_superior: @user.name).order(:user_id).order(:worked_on).group_by(&:user_id)
   end
   
-  #1ヶ月承認
+  #所属長申請処理
   def update_month_approval
     superior_approval_params.each do |id, item|
       attendance = Attendance.find(id)
       if item[:status_change] == "1" && item[:month_status] == "申請中"
       elsif item[:status_change] == "1" && item[:month_status] == "承認" 
         attendance.update_attributes(item)
-        flash[:success] = "1か月申請処理が完了しました。"    
+        flash[:success] = "所属長申請処理が完了しました。"    
       elsif item[:status_change] == "1" && item[:month_status] == "否認" 
         attendance.update_attributes(item)
-        flash[:success] = "1か月申請処理が完了しました。"
+        flash[:success] = "所属長申請処理が完了しました。"
       elsif item[:status_change] == "1" && item[:month_status] == "なし" 
         attendance.update_attributes(item)
-        flash[:success] = "1か月申請処理が完了しました。"
+        flash[:success] = "所属長申請処理が完了しました。"
       else
       end
     end

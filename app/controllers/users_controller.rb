@@ -70,13 +70,13 @@ class UsersController < ApplicationController
     @approval_sum6 = Attendance.where(superior_confirmation: "上長B", overwork_status: "申請中").count  
   end
   
-  #1ヶ月申請
+  #所属長承認申請
   def update_month_apply
     @attendance = @user.attendances.find_by(worked_on: params[:user][:apply_month])
     if params[:user][:month_check_superior].present?
       @attendance.month_status = "申請中"
       @attendance.update_attributes(month_params)
-      flash[:success] = "1ヶ月申請が完了しました。"
+      flash[:success] = "所属長承認申請が完了しました。"
     else
       flash[:danger] = "所属長を選択して下さい。"
     end
